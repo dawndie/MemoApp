@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - MemoRepositoryTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>MemoRepositoryTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/memoapp.repository.html">memoapp.repository</a> &gt; MemoRepositoryTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">10</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.351s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">count_ShouldReturnCorrectCount()</td>
+<td class="success">0.007s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">deleteById_ShouldRemoveMemo()</td>
+<td class="success">0.007s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">deleteById_WithNonExistentId_ShouldNotThrowException()</td>
+<td class="success">0.004s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">existsById_ShouldReturnCorrectBoolean()</td>
+<td class="success">0.163s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">findAll_ShouldReturnAllMemos()</td>
+<td class="success">0.070s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">findById_WhenMemoDoesNotExist_ShouldReturnEmpty()</td>
+<td class="success">0.003s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">findById_WhenMemoExists_ShouldReturnMemo()</td>
+<td class="success">0.004s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">save_NewMemo_ShouldPersistWithGeneratedId()</td>
+<td class="success">0.080s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">save_ShouldSetTimestampsAutomatically()</td>
+<td class="success">0.004s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">save_UpdateExistingMemo_ShouldUpdateFields()</td>
+<td class="success">0.009s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>2025-08-06T23:14:36.749+09:00  INFO 30150 --- [memo-app] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [memoapp.repository.MemoRepositoryTest]: MemoRepositoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-08-06T23:14:36.767+09:00  INFO 30150 --- [memo-app] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration memoapp.App for test class memoapp.repository.MemoRepositoryTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.2)
+
+2025-08-06T23:14:36.797+09:00  INFO 30150 --- [memo-app] [    Test worker] memoapp.repository.MemoRepositoryTest    : Starting MemoRepositoryTest using Java 21.0.4 with PID 30150 (started by voluongbang in /Users/voluongbang/Programing/Java_Learning/MemoApp/MemoApp_Backend/app)
+2025-08-06T23:14:36.798+09:00  INFO 30150 --- [memo-app] [    Test worker] memoapp.repository.MemoRepositoryTest    : The following 1 profile is active: &quot;test&quot;
+2025-08-06T23:14:36.862+09:00  INFO 30150 --- [memo-app] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-06T23:14:36.868+09:00  INFO 30150 --- [memo-app] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 1 JPA repository interface.
+2025-08-06T23:14:36.877+09:00  INFO 30150 --- [memo-app] [    Test worker] beddedDataSourceBeanFactoryPostProcessor : Replacing 'dataSource' DataSource bean with embedded version
+2025-08-06T23:14:36.894+09:00  INFO 30150 --- [memo-app] [    Test worker] o.s.j.d.e.EmbeddedDatabaseFactory        : Starting embedded database: url='jdbc:h2:mem:2d8958de-6e65-4541-8515-3583dead56de;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false', username='sa'
+2025-08-06T23:14:37.018+09:00  INFO 30150 --- [memo-app] [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-08-06T23:14:37.021+09:00  INFO 30150 --- [memo-app] [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-08-06T23:14:37.024+09:00  INFO 30150 --- [memo-app] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-08-06T23:14:37.029+09:00  WARN 30150 --- [memo-app] [    Test worker] org.hibernate.dialect.Dialect            : HHH000511: The 2.2.0 version for [org.hibernate.dialect.PostgreSQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 12.0.0. Check the community dialects project for available legacy versions.
+2025-08-06T23:14:37.029+09:00  WARN 30150 --- [memo-app] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-08-06T23:14:37.062+09:00  INFO 30150 --- [memo-app] [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-08-06T23:14:37.064+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    drop table if exists memos cascade
+Hibernate: 
+    drop table if exists memos cascade
+2025-08-06T23:14:37.069+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    create table memos (
+        created_at timestamp(6) not null,
+        id bigserial not null,
+        updated_at timestamp(6),
+        content TEXT,
+        title varchar(255) not null,
+        primary key (id)
+    )
+Hibernate: 
+    create table memos (
+        created_at timestamp(6) not null,
+        id bigserial not null,
+        updated_at timestamp(6),
+        content TEXT,
+        title varchar(255) not null,
+        primary key (id)
+    )
+2025-08-06T23:14:37.077+09:00  INFO 30150 --- [memo-app] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-08-06T23:14:37.126+09:00  INFO 30150 --- [memo-app] [    Test worker] memoapp.repository.MemoRepositoryTest    : Started MemoRepositoryTest in 0.357 seconds (process running for 3.921)
+2025-08-06T23:14:37.166+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+2025-08-06T23:14:37.210+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+2025-08-06T23:14:37.215+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+2025-08-06T23:14:37.275+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    select
+        m1_0.id,
+        m1_0.content,
+        m1_0.created_at,
+        m1_0.title,
+        m1_0.updated_at 
+    from
+        memos m1_0
+Hibernate: 
+    select
+        m1_0.id,
+        m1_0.content,
+        m1_0.created_at,
+        m1_0.title,
+        m1_0.updated_at 
+    from
+        memos m1_0
+2025-08-06T23:14:37.282+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+2025-08-06T23:14:37.286+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+2025-08-06T23:14:37.291+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    select
+        m1_0.id,
+        m1_0.content,
+        m1_0.created_at,
+        m1_0.title,
+        m1_0.updated_at 
+    from
+        memos m1_0 
+    where
+        m1_0.id=?
+Hibernate: 
+    select
+        m1_0.id,
+        m1_0.content,
+        m1_0.created_at,
+        m1_0.title,
+        m1_0.updated_at 
+    from
+        memos m1_0 
+    where
+        m1_0.id=?
+2025-08-06T23:14:37.296+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+2025-08-06T23:14:37.304+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+2025-08-06T23:14:37.462+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    select
+        count(*) 
+    from
+        memos m1_0 
+    where
+        m1_0.id=?
+Hibernate: 
+    select
+        count(*) 
+    from
+        memos m1_0 
+    where
+        m1_0.id=?
+2025-08-06T23:14:37.465+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    select
+        count(*) 
+    from
+        memos m1_0 
+    where
+        m1_0.id=?
+Hibernate: 
+    select
+        count(*) 
+    from
+        memos m1_0 
+    where
+        m1_0.id=?
+2025-08-06T23:14:37.469+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    select
+        m1_0.id,
+        m1_0.content,
+        m1_0.created_at,
+        m1_0.title,
+        m1_0.updated_at 
+    from
+        memos m1_0 
+    where
+        m1_0.id=?
+Hibernate: 
+    select
+        m1_0.id,
+        m1_0.content,
+        m1_0.created_at,
+        m1_0.title,
+        m1_0.updated_at 
+    from
+        memos m1_0 
+    where
+        m1_0.id=?
+2025-08-06T23:14:37.473+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    select
+        m1_0.id,
+        m1_0.content,
+        m1_0.created_at,
+        m1_0.title,
+        m1_0.updated_at 
+    from
+        memos m1_0 
+    where
+        m1_0.id=?
+Hibernate: 
+    select
+        m1_0.id,
+        m1_0.content,
+        m1_0.created_at,
+        m1_0.title,
+        m1_0.updated_at 
+    from
+        memos m1_0 
+    where
+        m1_0.id=?
+2025-08-06T23:14:37.478+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    select
+        count(*) 
+    from
+        memos m1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        memos m1_0
+2025-08-06T23:14:37.479+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+2025-08-06T23:14:37.480+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    select
+        count(*) 
+    from
+        memos m1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        memos m1_0
+2025-08-06T23:14:37.480+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+2025-08-06T23:14:37.480+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    select
+        count(*) 
+    from
+        memos m1_0
+Hibernate: 
+    select
+        count(*) 
+    from
+        memos m1_0
+2025-08-06T23:14:37.483+09:00 DEBUG 30150 --- [memo-app] [    Test worker] org.hibernate.SQL                        : 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        memos
+        (content, created_at, title, updated_at) 
+    values
+        (?, ?, ?, ?)
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 8.8</a> at Aug 6, 2025, 11:14:37 PM</p>
+</div>
+</div>
+</body>
+</html>

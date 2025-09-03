@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="memoapp.controller.MemoControllerTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2025-08-06T14:14:36" hostname="MacBook-Pro-2.local" time="0.198">
+  <properties/>
+  <testcase name="getAllMemos_ShouldReturnListOfMemos()" classname="memoapp.controller.MemoControllerTest" time="0.115"/>
+  <testcase name="deleteMemo_ShouldReturnNoContent()" classname="memoapp.controller.MemoControllerTest" time="0.012"/>
+  <testcase name="getAllMemos_WhenNoMemos_ShouldReturnEmptyList()" classname="memoapp.controller.MemoControllerTest" time="0.004"/>
+  <testcase name="getMemoById_WhenMemoExists_ShouldReturnMemo()" classname="memoapp.controller.MemoControllerTest" time="0.006"/>
+  <testcase name="updateMemo_WhenMemoDoesNotExist_ShouldReturnNotFound()" classname="memoapp.controller.MemoControllerTest" time="0.03"/>
+  <testcase name="deleteMemo_WithNonExistentId_ShouldStillReturnNoContent()" classname="memoapp.controller.MemoControllerTest" time="0.005"/>
+  <testcase name="getMemoById_WhenMemoDoesNotExist_ShouldReturnNotFound()" classname="memoapp.controller.MemoControllerTest" time="0.005"/>
+  <testcase name="createMemo_WithValidData_ShouldReturnCreatedMemo()" classname="memoapp.controller.MemoControllerTest" time="0.005"/>
+  <testcase name="updateMemo_WhenMemoExists_ShouldReturnUpdatedMemo()" classname="memoapp.controller.MemoControllerTest" time="0.005"/>
+  <system-out><![CDATA[2025-08-06T23:14:36.228+09:00  INFO 30150 --- [memo-app] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [memoapp.controller.MemoControllerTest]: MemoControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-08-06T23:14:36.238+09:00  INFO 30150 --- [memo-app] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration memoapp.App for test class memoapp.controller.MemoControllerTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.2)
+
+2025-08-06T23:14:36.256+09:00  INFO 30150 --- [memo-app] [    Test worker] memoapp.controller.MemoControllerTest    : Starting MemoControllerTest using Java 21.0.4 with PID 30150 (started by voluongbang in /Users/voluongbang/Programing/Java_Learning/MemoApp/MemoApp_Backend/app)
+2025-08-06T23:14:36.256+09:00  INFO 30150 --- [memo-app] [    Test worker] memoapp.controller.MemoControllerTest    : No active profile set, falling back to 1 default profile: "default"
+2025-08-06T23:14:36.257+09:00 DEBUG 30150 --- [memo-app] [    Test worker] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@33f059ad
+2025-08-06T23:14:36.457+09:00 DEBUG 30150 --- [memo-app] [    Test worker] s.w.s.m.m.a.RequestMappingHandlerMapping : 7 mappings in 'requestMappingHandlerMapping'
+2025-08-06T23:14:36.488+09:00 DEBUG 30150 --- [memo-app] [    Test worker] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2025-08-06T23:14:36.496+09:00 DEBUG 30150 --- [memo-app] [    Test worker] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-08-06T23:14:36.500+09:00 DEBUG 30150 --- [memo-app] [    Test worker] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-08-06T23:14:36.519+09:00  INFO 30150 --- [memo-app] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-08-06T23:14:36.519+09:00  INFO 30150 --- [memo-app] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-08-06T23:14:36.521+09:00  INFO 30150 --- [memo-app] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2025-08-06T23:14:36.533+09:00  INFO 30150 --- [memo-app] [    Test worker] memoapp.controller.MemoControllerTest    : Started MemoControllerTest in 0.293 seconds (process running for 3.328)
+2025-08-06T23:14:36.582+09:00 DEBUG 30150 --- [memo-app] [    Test worker] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to memoapp.controller.MemoController#getAllMemos()
+2025-08-06T23:14:36.602+09:00 DEBUG 30150 --- [memo-app] [    Test worker] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-06T23:14:36.602+09:00 DEBUG 30150 --- [memo-app] [    Test worker] m.m.a.RequestResponseBodyMethodProcessor : Writing [[memoapp.entity.Memo@3f808ad9, memoapp.entity.Memo@37a74cf4]]
+2025-08-06T23:14:36.665+09:00 DEBUG 30150 --- [memo-app] [    Test worker] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to memoapp.controller.MemoController#deleteMemo(Long)
+2025-08-06T23:14:36.670+09:00 DEBUG 30150 --- [memo-app] [    Test worker] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-06T23:14:36.671+09:00 DEBUG 30150 --- [memo-app] [    Test worker] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Nothing to write: null body
+2025-08-06T23:14:36.676+09:00 DEBUG 30150 --- [memo-app] [    Test worker] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to memoapp.controller.MemoController#getAllMemos()
+2025-08-06T23:14:36.676+09:00 DEBUG 30150 --- [memo-app] [    Test worker] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-06T23:14:36.676+09:00 DEBUG 30150 --- [memo-app] [    Test worker] m.m.a.RequestResponseBodyMethodProcessor : Writing [[]]
+2025-08-06T23:14:36.681+09:00 DEBUG 30150 --- [memo-app] [    Test worker] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to memoapp.controller.MemoController#getMemoById(Long)
+2025-08-06T23:14:36.682+09:00 DEBUG 30150 --- [memo-app] [    Test worker] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-06T23:14:36.683+09:00 DEBUG 30150 --- [memo-app] [    Test worker] m.m.a.RequestResponseBodyMethodProcessor : Writing [memoapp.entity.Memo@b45e264]
+2025-08-06T23:14:36.691+09:00 DEBUG 30150 --- [memo-app] [    Test worker] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to memoapp.controller.MemoController#updateMemo(Long, Memo)
+2025-08-06T23:14:36.706+09:00 DEBUG 30150 --- [memo-app] [    Test worker] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [memoapp.entity.Memo@3f1b4a14]
+2025-08-06T23:14:36.710+09:00 DEBUG 30150 --- [memo-app] [    Test worker] .m.m.a.ExceptionHandlerExceptionResolver : Using @ExceptionHandler memoapp.exception.GlobalExceptionHandler#handleMemoNotFoundException(MemoNotFoundException, WebRequest)
+2025-08-06T23:14:36.712+09:00 DEBUG 30150 --- [memo-app] [    Test worker] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-06T23:14:36.712+09:00 DEBUG 30150 --- [memo-app] [    Test worker] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{timestamp=2025-08-06T23:14:36.711335, status=404, error=Memo Not Found, message=Memo with id 999 no (truncated)...]
+2025-08-06T23:14:36.715+09:00 DEBUG 30150 --- [memo-app] [    Test worker] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [memoapp.exception.MemoNotFoundException: Memo with id 999 not found]
+2025-08-06T23:14:36.720+09:00 DEBUG 30150 --- [memo-app] [    Test worker] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to memoapp.controller.MemoController#deleteMemo(Long)
+2025-08-06T23:14:36.720+09:00 DEBUG 30150 --- [memo-app] [    Test worker] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-06T23:14:36.720+09:00 DEBUG 30150 --- [memo-app] [    Test worker] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Nothing to write: null body
+2025-08-06T23:14:36.726+09:00 DEBUG 30150 --- [memo-app] [    Test worker] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to memoapp.controller.MemoController#getMemoById(Long)
+2025-08-06T23:14:36.727+09:00 DEBUG 30150 --- [memo-app] [    Test worker] .m.m.a.ExceptionHandlerExceptionResolver : Using @ExceptionHandler memoapp.exception.GlobalExceptionHandler#handleMemoNotFoundException(MemoNotFoundException, WebRequest)
+2025-08-06T23:14:36.727+09:00 DEBUG 30150 --- [memo-app] [    Test worker] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-06T23:14:36.727+09:00 DEBUG 30150 --- [memo-app] [    Test worker] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{timestamp=2025-08-06T23:14:36.727272, status=404, error=Memo Not Found, message=Memo with id 999 no (truncated)...]
+2025-08-06T23:14:36.727+09:00 DEBUG 30150 --- [memo-app] [    Test worker] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [memoapp.exception.MemoNotFoundException: Memo with id 999 not found]
+2025-08-06T23:14:36.732+09:00 DEBUG 30150 --- [memo-app] [    Test worker] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to memoapp.controller.MemoController#createMemo(Memo)
+2025-08-06T23:14:36.733+09:00 DEBUG 30150 --- [memo-app] [    Test worker] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [memoapp.entity.Memo@237e4ed9]
+2025-08-06T23:14:36.734+09:00 DEBUG 30150 --- [memo-app] [    Test worker] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-06T23:14:36.734+09:00 DEBUG 30150 --- [memo-app] [    Test worker] m.m.a.RequestResponseBodyMethodProcessor : Writing [memoapp.entity.Memo@1ef4179]
+2025-08-06T23:14:36.739+09:00 DEBUG 30150 --- [memo-app] [    Test worker] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to memoapp.controller.MemoController#updateMemo(Long, Memo)
+2025-08-06T23:14:36.740+09:00 DEBUG 30150 --- [memo-app] [    Test worker] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [memoapp.entity.Memo@75bbeb89]
+2025-08-06T23:14:36.740+09:00 DEBUG 30150 --- [memo-app] [    Test worker] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-06T23:14:36.740+09:00 DEBUG 30150 --- [memo-app] [    Test worker] m.m.a.RequestResponseBodyMethodProcessor : Writing [memoapp.entity.Memo@197bf5ef]
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
