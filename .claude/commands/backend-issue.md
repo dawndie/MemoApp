@@ -24,7 +24,7 @@ Use the **backend-specialist** agent to:
 
 ### Phase 2: Implementation Orchestration
 - get the roadmap from phase 1
-- Create feature branch
+- Create branch. for example: feat-1
 - Implement changes following analysis
 - Write tests
 
