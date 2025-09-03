@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: memo-postgres
+    environment:
+      POSTGRES_DB: memoapp
+      POSTGRES_USER: memoapp
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - memo-network
+
+  app:
+    build: .
+    container_name: memo-app
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/memoapp
+      SPRING_DATASOURCE_USERNAME: memoapp
+      SPRING_DATASOURCE_PASSWORD: password
+    ports:
+      - "1919:1919"
+    networks:
+      - memo-network
+
+volumes:
+  postgres_data:
+
+networks:
+  memo-network:
+    driver: bridge
