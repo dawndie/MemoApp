@@ -1,9 +1,16 @@
 package memoapp.controller;
 
+import jakarta.validation.Valid;
+import memoapp.dto.BulkPriorityUpdateRequest;
+import memoapp.dto.PriorityStatistics;
+import memoapp.dto.PriorityUpdateRequest;
 import memoapp.entity.Memo;
+import memoapp.entity.Priority;
 import memoapp.service.MemoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
 
 import java.util.List;
 
@@ -29,7 +36,25 @@ public class MemoController {
     }
 
     @GetMapping
-    public List<Memo> getAllMemos() {
+    public List<Memo> getAllMemos(
+            @RequestParam(required = false) String priority,
+            @RequestParam(required = false) String sort) {
+        
+        // Handle priority filtering
+        if (priority != null && !priority.isEmpty()) {
+            List<Priority> priorities = Arrays.stream(priority.split(","))
+                    .map(String::trim)
+                    .map(String::toUpperCase)
+                    .map(Priority::fromValue)
+                    .collect(java.util.stream.Collectors.toList());
+            return memoService.getMemosByPriority(priorities);
+        }
+        
+        // Handle sorting
+        if (sort != null && !sort.isEmpty()) {
+            return memoService.getMemosSortedByPriority(sort);
+        }
+        
         return memoService.getAllMemos();
     }
 
@@ -68,5 +93,38 @@ public class MemoController {
     public ResponseEntity<Void> deleteMemo(@PathVariable Long id) {
         memoService.deleteMemo(id);
         return ResponseEntity.noContent().build();
+    }
+    
+    /**
+     * Updates the priority of a specific memo.
+     * 
+     * @param id memo ID to update
+     * @param request priority update request
+     * @return updated memo
+     */
+    @PutMapping("/{id}/priority")
+    public Memo updateMemoPriority(@PathVariable Long id, @Valid @RequestBody PriorityUpdateRequest request) {
+        return memoService.updateMemoPriority(id, request.getPriority());
+    }
+    
+    /**
+     * Bulk update priority for multiple memos.
+     * 
+     * @param request bulk priority update request
+     * @return list of updated memos
+     */
+    @PostMapping("/bulk/priority")
+    public List<Memo> bulkUpdatePriority(@Valid @RequestBody BulkPriorityUpdateRequest request) {
+        return memoService.bulkUpdatePriority(request);
+    }
+    
+    /**
+     * Get priority statistics for all memos.
+     * 
+     * @return priority statistics
+     */
+    @GetMapping("/stats/priority")
+    public PriorityStatistics getPriorityStatistics() {
+        return memoService.getPriorityStatistics();
     }
 }

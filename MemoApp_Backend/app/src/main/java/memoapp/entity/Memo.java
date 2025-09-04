@@ -25,6 +25,10 @@ public class Memo {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Priority priority = Priority.NONE;
+    
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -41,6 +45,13 @@ public class Memo {
     public Memo(String title, String content) {
         this.title = title;
         this.content = content;
+        this.priority = Priority.NONE;
+    }
+    
+    public Memo(String title, String content, Priority priority) {
+        this.title = title;
+        this.content = content;
+        this.priority = priority != null ? priority : Priority.NONE;
     }
     
     public Long getId() {
@@ -81,5 +92,13 @@ public class Memo {
     
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+    
+    public Priority getPriority() {
+        return priority;
+    }
+    
+    public void setPriority(Priority priority) {
+        this.priority = priority != null ? priority : Priority.NONE;
     }
 }
