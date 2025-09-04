@@ -55,7 +55,7 @@
   flex-direction: column;
   align-items: center;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #2d4af3 0%, #db11fb 100%);
   border-radius: 0.75rem;
   color: white;
   text-align: center;
@@ -174,17 +174,17 @@
   .priority-stats-container {
     padding: 1rem;
   }
-  
+
   .stats-header {
     flex-direction: column;
     gap: 1rem;
     align-items: stretch;
   }
-  
+
   .priority-breakdown {
     grid-template-columns: 1fr;
   }
-  
+
   .total-number {
     font-size: 2.5rem;
   }

@@ -2,7 +2,7 @@
   <div class="stats-header">
     <h3>Priority Overview</h3>
     <button class="btn btn-sm btn-outline-secondary" (click)="refresh()" [disabled]="loading">
-      <span *ngIf="!loading">🔄</span>
+      <i *ngIf="!loading" class="fas fa-sync-alt"></i>
       <span *ngIf="loading" class="spinner"></span>
       Refresh
     </button>
@@ -32,7 +32,7 @@
         class="priority-stat-card">
         
         <div class="stat-header">
-          <span class="priority-icon">{{ config.icon }}</span>
+          <i class="priority-icon" [ngClass]="config.icon" [style.color]="config.color"></i>
           <span class="priority-label">{{ config.label }}</span>
         </div>
         

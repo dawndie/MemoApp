@@ -86,7 +86,10 @@
         <h3 class="memo-title">{{ memo.title }}</h3>
         
         <div *ngIf="memo.priority" class="priority-tag priority-{{ memo.priority.toLowerCase() }}">
-          <span class="priority-icon">●</span>
+          <i class="priority-icon fas fa-circle" 
+             [class.fa-exclamation-circle]="memo.priority === 'HIGH'"
+             [class.fa-exclamation-triangle]="memo.priority === 'MEDIUM'"
+             [class.fa-check-circle]="memo.priority === 'LOW'"></i>
           {{ getPriorityLabel(memo.priority) }}
         </div>
         
@@ -94,8 +97,12 @@
         
         <!-- Action Buttons -->
         <div class="actions">
-          <a [routerLink]="['/memo/edit', memo.id]" class="btn btn-secondary btn-sm">✏️ Edit</a>
-          <button (click)="deleteMemo(memo.id!)" class="btn btn-danger btn-sm">🗑️ Delete</button>
+          <a [routerLink]="['/memo/edit', memo.id]" class="btn btn-secondary btn-sm">
+            <i class="fas fa-edit"></i> Edit
+          </a>
+          <button (click)="deleteMemo(memo.id!)" class="btn btn-danger btn-sm">
+            <i class="fas fa-trash-alt"></i> Delete
+          </button>
         </div>
         
         <!-- Meta Information -->

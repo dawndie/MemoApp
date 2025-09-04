@@ -15,9 +15,9 @@ export class PriorityStatsComponent implements OnInit {
   error: string | null = null;
 
   priorityConfig = [
-    { key: 'high', label: 'High Priority', color: '#dc3545', icon: '🔴' },
-    { key: 'medium', label: 'Medium Priority', color: '#ffc107', icon: '🟡' },
-    { key: 'low', label: 'Low Priority', color: '#28a745', icon: '🟢' }
+    { key: 'high', label: 'High Priority', color: '#dc3545', icon: 'fas fa-exclamation-circle' },
+    { key: 'medium', label: 'Medium Priority', color: '#ffc107', icon: 'fas fa-exclamation-triangle' },
+    { key: 'low', label: 'Low Priority', color: '#28a745', icon: 'fas fa-check-circle' }
   ];
 
   constructor(private memoService: MemoService) {}
