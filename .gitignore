@@ -66,3 +66,4 @@ release.properties
 *.swo
 node_modules/
 .angular/
+.playwright-mcp/
