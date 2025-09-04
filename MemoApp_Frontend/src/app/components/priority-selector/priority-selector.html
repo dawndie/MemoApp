@@ -1,0 +1,25 @@
+<div class="priority-selector">
+  <select 
+    [value]="selectedPriority || ''" 
+    [disabled]="disabled"
+    [required]="required"
+    (change)="onSelectChange($event)"
+    class="form-select priority-select">
+    
+    <option value="">{{ placeholder }}</option>
+    <option 
+      *ngFor="let priority of priorities" 
+      [value]="priority.value"
+      [style.color]="priority.color">
+      {{ priority.label }}
+    </option>
+  </select>
+  
+  <div *ngIf="selectedPriority" class="priority-indicator">
+    <span 
+      class="priority-badge" 
+      [style.background-color]="getPriorityColor(selectedPriority)">
+      {{ getPriorityLabel(selectedPriority) }}
+    </span>
+  </div>
+</div>

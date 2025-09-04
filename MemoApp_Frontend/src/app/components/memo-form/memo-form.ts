@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MemoService } from '../../services/memo.service';
-import { Memo } from '../../models/memo.model';
+import { Memo, Priority } from '../../models/memo.model';
+import { PrioritySelector } from '../priority-selector/priority-selector';
 
 @Component({
   selector: 'app-memo-form',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, PrioritySelector],
   templateUrl: './memo-form.html',
   styleUrl: './memo-form.css'
 })
@@ -17,6 +18,7 @@ export class MemoForm implements OnInit {
   memoId: number | null = null;
   loading = false;
   error: string | null = null;
+  selectedPriority?: Priority;
 
   constructor(
     private fb: FormBuilder,
@@ -49,6 +51,7 @@ export class MemoForm implements OnInit {
             title: memo.title,
             content: memo.content
           });
+          this.selectedPriority = memo.priority;
           this.loading = false;
         },
         error: (err) => {
@@ -65,7 +68,10 @@ export class MemoForm implements OnInit {
       this.loading = true;
       this.error = null;
 
-      const memoData = this.memoForm.value;
+      const memoData = {
+        ...this.memoForm.value,
+        priority: this.selectedPriority
+      };
 
       if (this.isEditMode && this.memoId) {
         this.memoService.updateMemo(this.memoId, memoData).subscribe({
@@ -95,5 +101,9 @@ export class MemoForm implements OnInit {
 
   onCancel(): void {
     this.router.navigate(['/']);
+  }
+
+  onPriorityChange(priority: Priority | undefined): void {
+    this.selectedPriority = priority;
   }
 }

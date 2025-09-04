@@ -39,11 +39,15 @@ textarea.form-control {
 
 @media (max-width: 768px) {
   .memo-form-container {
-    padding: 1rem;
+    padding: 1rem 0.75rem;
+  }
+  
+  .form-header h1 {
+    font-size: 2rem;
   }
   
   .memo-form {
-    padding: 1.5rem;
+    padding: 1.5rem 1rem;
   }
   
   .form-actions {
@@ -53,5 +57,23 @@ textarea.form-control {
   
   .form-actions .btn {
     width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .memo-form-container {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .form-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .memo-form {
+    padding: 1rem 0.75rem;
+  }
+  
+  textarea.form-control {
+    min-height: 120px;
   }
 }
