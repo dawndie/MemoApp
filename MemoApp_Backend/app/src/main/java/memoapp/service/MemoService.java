@@ -1,6 +1,9 @@
 package memoapp.service;
 
+import memoapp.dto.BulkPriorityUpdateRequest;
+import memoapp.dto.PriorityStatistics;
 import memoapp.entity.Memo;
+import memoapp.entity.Priority;
 import memoapp.exception.MemoNotFoundException;
 import memoapp.exception.MemoValidationException;
 import memoapp.repository.MemoRepository;
@@ -8,7 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service class for managing memo operations.
@@ -117,6 +121,7 @@ public class MemoService {
         // Update the fields while preserving the original ID and created timestamp
         existingMemo.setTitle(updatedMemo.getTitle());
         existingMemo.setContent(updatedMemo.getContent());
+        existingMemo.setPriority(updatedMemo.getPriority());
         
         return memoRepository.save(existingMemo);
     }
@@ -157,6 +162,146 @@ public class MemoService {
     public boolean memoExists(Long id) {
         validateMemoId(id);
         return memoRepository.existsById(id);
+    }
+    
+    /**
+     * Retrieves all memos filtered by priority levels.
+     * 
+     * @param priorities list of priorities to filter by
+     * @return list of memos with specified priorities
+     * @throws MemoValidationException if priorities list is invalid
+     */
+    public List<Memo> getMemosByPriority(List<Priority> priorities) {
+        if (priorities == null || priorities.isEmpty()) {
+            return getAllMemos();
+        }
+        
+        // Remove null values and duplicates
+        List<Priority> validPriorities = priorities.stream()
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        
+        if (validPriorities.isEmpty()) {
+            throw new MemoValidationException("At least one valid priority must be specified");
+        }
+        
+        return memoRepository.findByPrioritiesOrderByPriorityDescCreatedAtDesc(validPriorities);
+    }
+    
+    /**
+     * Retrieves all memos sorted by priority.
+     * 
+     * @param sortOrder "priority_desc" or "priority_asc"
+     * @return list of memos sorted by priority
+     */
+    public List<Memo> getMemosSortedByPriority(String sortOrder) {
+        if (sortOrder == null || sortOrder.isEmpty()) {
+            return getAllMemos();
+        }
+        
+        switch (sortOrder.toLowerCase()) {
+            case "priority_desc":
+                return memoRepository.findAllOrderByPriorityDescCreatedAtDesc();
+            case "priority_asc":
+                return memoRepository.findAllOrderByPriorityAscCreatedAtDesc();
+            default:
+                throw new MemoValidationException("Invalid sort order. Use 'priority_desc' or 'priority_asc'", "sort", sortOrder);
+        }
+    }
+    
+    /**
+     * Updates the priority of a specific memo.
+     * 
+     * @param id memo ID to update
+     * @param priority new priority value
+     * @return updated memo
+     * @throws MemoNotFoundException if memo doesn't exist
+     * @throws MemoValidationException if priority is invalid
+     */
+    @Transactional
+    public Memo updateMemoPriority(Long id, Priority priority) {
+        validateMemoId(id);
+        if (priority == null) {
+            throw new MemoValidationException("Priority cannot be null", "priority", null);
+        }
+        
+        Memo existingMemo = getMemoById(id);
+        existingMemo.setPriority(priority);
+        
+        return memoRepository.save(existingMemo);
+    }
+    
+    /**
+     * Updates the priority of multiple memos in bulk.
+     * 
+     * @param request bulk update request containing memo IDs and new priority
+     * @return list of updated memos
+     * @throws MemoValidationException if request is invalid
+     * @throws MemoNotFoundException if any memo doesn't exist
+     */
+    @Transactional
+    public List<Memo> bulkUpdatePriority(BulkPriorityUpdateRequest request) {
+        if (request == null) {
+            throw new MemoValidationException("Bulk update request cannot be null");
+        }
+        
+        List<Long> memoIds = request.getMemoIds();
+        Priority priority = request.getPriority();
+        
+        if (memoIds == null || memoIds.isEmpty()) {
+            throw new MemoValidationException("Memo IDs cannot be empty");
+        }
+        
+        if (memoIds.size() > 100) {
+            throw new MemoValidationException("Cannot update more than 100 memos at once");
+        }
+        
+        if (priority == null) {
+            throw new MemoValidationException("Priority cannot be null", "priority", null);
+        }
+        
+        // Validate all memo IDs and check existence
+        for (Long id : memoIds) {
+            validateMemoId(id);
+            if (!memoRepository.existsById(id)) {
+                throw new MemoNotFoundException(id);
+            }
+        }
+        
+        // Fetch all memos and update their priority
+        List<Memo> memos = memoRepository.findAllById(memoIds);
+        for (Memo memo : memos) {
+            memo.setPriority(priority);
+        }
+        
+        return memoRepository.saveAll(memos);
+    }
+    
+    /**
+     * Retrieves priority statistics for all memos.
+     * 
+     * @return statistics object containing priority counts and analysis
+     */
+    public PriorityStatistics getPriorityStatistics() {
+        Map<Priority, Long> priorityCounts = new HashMap<>();
+        
+        // Count memos for each priority level
+        for (Priority priority : Priority.values()) {
+            long count = memoRepository.countByPriority(priority);
+            priorityCounts.put(priority, count);
+        }
+        
+        long totalMemos = memoRepository.count();
+        
+        // Find most common priority
+        Priority mostCommonPriority = priorityCounts.entrySet().stream()
+                .filter(entry -> entry.getValue() > 0)
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(Priority.NONE);
+        
+        return new PriorityStatistics(priorityCounts, totalMemos, mostCommonPriority);
     }
     
     /**

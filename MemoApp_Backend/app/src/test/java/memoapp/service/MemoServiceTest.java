@@ -1,6 +1,9 @@
 package memoapp.service;
 
+import memoapp.dto.BulkPriorityUpdateRequest;
+import memoapp.dto.PriorityStatistics;
 import memoapp.entity.Memo;
+import memoapp.entity.Priority;
 import memoapp.exception.MemoNotFoundException;
 import memoapp.exception.MemoValidationException;
 import memoapp.repository.MemoRepository;
@@ -12,9 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -42,6 +43,7 @@ class MemoServiceTest {
         testMemo.setId(1L);
         testMemo.setTitle("Test Memo");
         testMemo.setContent("Test content");
+        testMemo.setPriority(Priority.MEDIUM);
         testMemo.setCreatedAt(LocalDateTime.now());
         testMemo.setUpdatedAt(LocalDateTime.now());
     }
@@ -281,5 +283,240 @@ class MemoServiceTest {
 
         assertFalse(exists);
         verify(memoRepository, times(1)).existsById(999L);
+    }
+
+    // ===============================
+    // Priority-related Tests
+    // ===============================
+
+    @Test
+    void getMemosByPriority_WithValidPriorities_ShouldReturnFilteredMemos() {
+        List<Priority> priorities = Arrays.asList(Priority.HIGH, Priority.MEDIUM);
+        List<Memo> expectedMemos = Arrays.asList(testMemo);
+        
+        when(memoRepository.findByPrioritiesOrderByPriorityDescCreatedAtDesc(priorities))
+                .thenReturn(expectedMemos);
+
+        List<Memo> result = memoService.getMemosByPriority(priorities);
+
+        assertEquals(1, result.size());
+        assertEquals(expectedMemos, result);
+        verify(memoRepository, times(1)).findByPrioritiesOrderByPriorityDescCreatedAtDesc(priorities);
+    }
+
+    @Test
+    void getMemosByPriority_WithNullPriorities_ShouldReturnAllMemos() {
+        List<Memo> allMemos = Arrays.asList(testMemo);
+        when(memoRepository.findAll()).thenReturn(allMemos);
+
+        List<Memo> result = memoService.getMemosByPriority(null);
+
+        assertEquals(allMemos, result);
+        verify(memoRepository, times(1)).findAll();
+        verify(memoRepository, never()).findByPrioritiesOrderByPriorityDescCreatedAtDesc(any());
+    }
+
+    @Test
+    void getMemosByPriority_WithEmptyPriorities_ShouldReturnAllMemos() {
+        List<Memo> allMemos = Arrays.asList(testMemo);
+        when(memoRepository.findAll()).thenReturn(allMemos);
+
+        List<Memo> result = memoService.getMemosByPriority(new ArrayList<>());
+
+        assertEquals(allMemos, result);
+        verify(memoRepository, times(1)).findAll();
+    }
+
+    @Test
+    void getMemosByPriority_WithOnlyNullValues_ShouldThrowException() {
+        List<Priority> priorities = Arrays.asList(null, null);
+
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () -> 
+                memoService.getMemosByPriority(priorities));
+
+        assertTrue(exception.getMessage().contains("At least one valid priority"));
+    }
+
+    @Test
+    void getMemosSortedByPriority_WithDescendingSort_ShouldReturnSortedMemos() {
+        List<Memo> sortedMemos = Arrays.asList(testMemo);
+        when(memoRepository.findAllOrderByPriorityDescCreatedAtDesc()).thenReturn(sortedMemos);
+
+        List<Memo> result = memoService.getMemosSortedByPriority("priority_desc");
+
+        assertEquals(sortedMemos, result);
+        verify(memoRepository, times(1)).findAllOrderByPriorityDescCreatedAtDesc();
+    }
+
+    @Test
+    void getMemosSortedByPriority_WithAscendingSort_ShouldReturnSortedMemos() {
+        List<Memo> sortedMemos = Arrays.asList(testMemo);
+        when(memoRepository.findAllOrderByPriorityAscCreatedAtDesc()).thenReturn(sortedMemos);
+
+        List<Memo> result = memoService.getMemosSortedByPriority("priority_asc");
+
+        assertEquals(sortedMemos, result);
+        verify(memoRepository, times(1)).findAllOrderByPriorityAscCreatedAtDesc();
+    }
+
+    @Test
+    void getMemosSortedByPriority_WithInvalidSort_ShouldThrowException() {
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () -> 
+                memoService.getMemosSortedByPriority("invalid_sort"));
+
+        assertTrue(exception.getMessage().contains("Invalid sort order"));
+        assertEquals("sort", exception.getFieldName());
+    }
+
+    @Test
+    void getMemosSortedByPriority_WithNullSort_ShouldReturnAllMemos() {
+        List<Memo> allMemos = Arrays.asList(testMemo);
+        when(memoRepository.findAll()).thenReturn(allMemos);
+
+        List<Memo> result = memoService.getMemosSortedByPriority(null);
+
+        assertEquals(allMemos, result);
+        verify(memoRepository, times(1)).findAll();
+    }
+
+    @Test
+    void updateMemoPriority_WithValidData_ShouldUpdatePriority() {
+        when(memoRepository.findById(1L)).thenReturn(Optional.of(testMemo));
+        when(memoRepository.save(any(Memo.class))).thenReturn(testMemo);
+
+        Memo result = memoService.updateMemoPriority(1L, Priority.HIGH);
+
+        assertNotNull(result);
+        assertEquals(Priority.HIGH, testMemo.getPriority());
+        verify(memoRepository, times(1)).findById(1L);
+        verify(memoRepository, times(1)).save(testMemo);
+    }
+
+    @Test
+    void updateMemoPriority_WithNullPriority_ShouldThrowException() {
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () -> 
+                memoService.updateMemoPriority(1L, null));
+
+        assertTrue(exception.getMessage().contains("Priority cannot be null"));
+        assertEquals("priority", exception.getFieldName());
+        verify(memoRepository, never()).save(any());
+    }
+
+    @Test
+    void updateMemoPriority_WithNonExistentMemo_ShouldThrowNotFoundException() {
+        when(memoRepository.findById(999L)).thenReturn(Optional.empty());
+
+        MemoNotFoundException exception = assertThrows(MemoNotFoundException.class, () -> 
+                memoService.updateMemoPriority(999L, Priority.HIGH));
+
+        assertEquals(999L, exception.getMemoId());
+        verify(memoRepository, never()).save(any());
+    }
+
+    @Test
+    void bulkUpdatePriority_WithValidData_ShouldUpdateAllMemos() {
+        List<Long> memoIds = Arrays.asList(1L, 2L, 3L);
+        BulkPriorityUpdateRequest request = new BulkPriorityUpdateRequest(memoIds, Priority.HIGH);
+        
+        Memo memo1 = new Memo("Title 1", "Content 1");
+        memo1.setId(1L);
+        Memo memo2 = new Memo("Title 2", "Content 2");
+        memo2.setId(2L);
+        Memo memo3 = new Memo("Title 3", "Content 3");
+        memo3.setId(3L);
+        
+        List<Memo> memos = Arrays.asList(memo1, memo2, memo3);
+
+        when(memoRepository.existsById(1L)).thenReturn(true);
+        when(memoRepository.existsById(2L)).thenReturn(true);
+        when(memoRepository.existsById(3L)).thenReturn(true);
+        when(memoRepository.findAllById(memoIds)).thenReturn(memos);
+        when(memoRepository.saveAll(memos)).thenReturn(memos);
+
+        List<Memo> result = memoService.bulkUpdatePriority(request);
+
+        assertEquals(3, result.size());
+        for (Memo memo : memos) {
+            assertEquals(Priority.HIGH, memo.getPriority());
+        }
+        verify(memoRepository, times(1)).saveAll(memos);
+    }
+
+    @Test
+    void bulkUpdatePriority_WithNullRequest_ShouldThrowException() {
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () -> 
+                memoService.bulkUpdatePriority(null));
+
+        assertTrue(exception.getMessage().contains("cannot be null"));
+    }
+
+    @Test
+    void bulkUpdatePriority_WithEmptyMemoIds_ShouldThrowException() {
+        BulkPriorityUpdateRequest request = new BulkPriorityUpdateRequest(new ArrayList<>(), Priority.HIGH);
+
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () -> 
+                memoService.bulkUpdatePriority(request));
+
+        assertTrue(exception.getMessage().contains("cannot be empty"));
+    }
+
+    @Test
+    void bulkUpdatePriority_WithTooManyMemos_ShouldThrowException() {
+        List<Long> tooManyIds = new ArrayList<>();
+        for (long i = 1; i <= 101; i++) {
+            tooManyIds.add(i);
+        }
+        BulkPriorityUpdateRequest request = new BulkPriorityUpdateRequest(tooManyIds, Priority.HIGH);
+
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () -> 
+                memoService.bulkUpdatePriority(request));
+
+        assertTrue(exception.getMessage().contains("more than 100 memos"));
+    }
+
+    @Test
+    void bulkUpdatePriority_WithNonExistentMemo_ShouldThrowNotFoundException() {
+        List<Long> memoIds = Arrays.asList(1L, 999L);
+        BulkPriorityUpdateRequest request = new BulkPriorityUpdateRequest(memoIds, Priority.HIGH);
+
+        when(memoRepository.existsById(1L)).thenReturn(true);
+        when(memoRepository.existsById(999L)).thenReturn(false);
+
+        MemoNotFoundException exception = assertThrows(MemoNotFoundException.class, () -> 
+                memoService.bulkUpdatePriority(request));
+
+        assertEquals(999L, exception.getMemoId());
+        verify(memoRepository, never()).saveAll(any());
+    }
+
+    @Test
+    void getPriorityStatistics_ShouldReturnCorrectStatistics() {
+        when(memoRepository.countByPriority(Priority.HIGH)).thenReturn(3L);
+        when(memoRepository.countByPriority(Priority.MEDIUM)).thenReturn(5L);
+        when(memoRepository.countByPriority(Priority.LOW)).thenReturn(2L);
+        when(memoRepository.countByPriority(Priority.NONE)).thenReturn(1L);
+        when(memoRepository.count()).thenReturn(11L);
+
+        PriorityStatistics result = memoService.getPriorityStatistics();
+
+        assertNotNull(result);
+        assertEquals(11L, result.getTotalMemos());
+        assertEquals(Priority.MEDIUM, result.getMostCommonPriority());
+        assertEquals(3L, result.getPriorityCounts().get(Priority.HIGH));
+        assertEquals(5L, result.getPriorityCounts().get(Priority.MEDIUM));
+        assertEquals(2L, result.getPriorityCounts().get(Priority.LOW));
+        assertEquals(1L, result.getPriorityCounts().get(Priority.NONE));
+    }
+
+    @Test
+    void getPriorityStatistics_WithNoCounts_ShouldReturnNoneAsMostCommon() {
+        when(memoRepository.countByPriority(any(Priority.class))).thenReturn(0L);
+        when(memoRepository.count()).thenReturn(0L);
+
+        PriorityStatistics result = memoService.getPriorityStatistics();
+
+        assertNotNull(result);
+        assertEquals(0L, result.getTotalMemos());
+        assertEquals(Priority.NONE, result.getMostCommonPriority());
     }
 }
