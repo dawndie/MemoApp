@@ -1,43 +1,115 @@
 <div class="memo-list-container">
+  <!-- Header -->
   <div class="header">
     <h1>My Memos</h1>
-    <button class="btn btn-primary" [routerLink]="['/memo/new']">
-      Add New Memo
-    </button>
+    <a [routerLink]="['/memo/new']" class="btn btn-primary">+ Add New Memo</a>
   </div>
 
+  <!-- Priority Stats -->
+  <app-priority-stats></app-priority-stats>
+
+  <!-- Filters -->
+  <div class="filters-card" *ngIf="!loading">
+    <h3>Filter & Sort</h3>
+    <div class="filters-row">
+      <div class="filter-group">
+        <select [(ngModel)]="selectedPriorityFilter" (change)="onFilterChange()" class="form-control">
+          <option value="">All Priorities</option>
+          <option value="high">High Priority</option>
+          <option value="medium">Medium Priority</option>
+          <option value="low">Low Priority</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <select [(ngModel)]="selectedSort" (change)="onSortChange()" class="form-control">
+          <option value="">Default Sort</option>
+          <option value="priority_desc">Priority (High to Low)</option>
+          <option value="priority_asc">Priority (Low to High)</option>
+          <option value="created_desc">Newest First</option>
+          <option value="created_asc">Oldest First</option>
+        </select>
+      </div>
+
+      <div class="filter-group" *ngIf="selectedMemos.size > 0">
+        <span class="selected-count">{{ selectedMemos.size }} selected</span>
+        <app-priority-selector 
+          [placeholder]="'Set Priority'"
+          (priorityChange)="onBulkPriorityChange($event)">
+        </app-priority-selector>
+        <button class="btn btn-secondary btn-sm" (click)="clearSelection()">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
   <div *ngIf="loading" class="loading">
-    Loading memos...
+    <p>Loading memos...</p>
   </div>
 
+  <!-- Error -->
   <div *ngIf="error" class="error">
     {{ error }}
-    <button class="btn btn-secondary" (click)="loadMemos()">Retry</button>
+    <button class="btn btn-primary btn-sm" (click)="loadMemos()">Retry</button>
   </div>
 
+  <!-- Empty State -->
   <div *ngIf="!loading && !error && memos.length === 0" class="empty-state">
-    <p>No memos found. <a [routerLink]="['/memo/new']">Create your first memo</a></p>
+    <h3>No memos found</h3>
+    <p>Get started by creating your first memo!</p>
+    <a [routerLink]="['/memo/new']" class="btn btn-primary">Create your first memo</a>
   </div>
 
+  <!-- Memo Cards -->
   <div *ngIf="!loading && !error && memos.length > 0" class="memo-grid">
-    <div *ngFor="let memo of memos" class="memo-card">
-      <div class="memo-header">
-        <h3>{{ memo.title }}</h3>
-        <div class="memo-actions">
-          <button class="btn btn-sm btn-secondary" [routerLink]="['/memo/edit', memo.id]">
-            Edit
-          </button>
-          <button class="btn btn-sm btn-danger" (click)="deleteMemo(memo.id!)">
-            Delete
-          </button>
+    <div *ngFor="let memo of memos" class="memo-card" [class.selected]="selectedMemos.has(memo.id!)">
+      
+      <!-- Card Header -->
+      <div class="card-header">
+        <input 
+          type="checkbox" 
+          [checked]="selectedMemos.has(memo.id!)"
+          (change)="toggleMemoSelection(memo.id!, $event)"
+          class="memo-checkbox">
+        
+        <div class="priority-overlay">
+          <app-priority-selector 
+            [selectedPriority]="memo.priority"
+            [placeholder]="'Set Priority'"
+            (priorityChange)="updateMemoPriority(memo.id!, $event)">
+          </app-priority-selector>
         </div>
       </div>
-      <p class="memo-content">{{ memo.content }}</p>
-      <div class="memo-footer">
-        <small>Created: {{ formatDate(memo.createdAt!) }}</small>
-        <small *ngIf="memo.updatedAt !== memo.createdAt">
-          Updated: {{ formatDate(memo.updatedAt!) }}
-        </small>
+      
+      <!-- Card Content -->
+      <div class="card-content">
+        <h3 class="memo-title">{{ memo.title }}</h3>
+        
+        <div *ngIf="memo.priority" class="priority-tag priority-{{ memo.priority.toLowerCase() }}">
+          <i class="priority-icon fas fa-circle" 
+             [class.fa-exclamation-circle]="memo.priority === 'HIGH'"
+             [class.fa-exclamation-triangle]="memo.priority === 'MEDIUM'"
+             [class.fa-check-circle]="memo.priority === 'LOW'"></i>
+          {{ getPriorityLabel(memo.priority) }}
+        </div>
+        
+        <p class="memo-content">{{ memo.content }}</p>
+        
+        <!-- Action Buttons -->
+        <div class="actions">
+          <a [routerLink]="['/memo/edit', memo.id]" class="btn btn-secondary btn-sm">
+            <i class="fas fa-edit"></i> Edit
+          </a>
+          <button (click)="deleteMemo(memo.id!)" class="btn btn-danger btn-sm">
+            <i class="fas fa-trash-alt"></i> Delete
+          </button>
+        </div>
+        
+        <!-- Meta Information -->
+        <div class="memo-meta">
+          <div>Created: {{ formatDate(memo.createdAt!) }}</div>
+          <div *ngIf="memo.updatedAt !== memo.createdAt">Updated: {{ formatDate(memo.updatedAt!) }}</div>
+        </div>
       </div>
     </div>
   </div>

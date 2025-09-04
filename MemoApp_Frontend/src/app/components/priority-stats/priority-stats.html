@@ -1,0 +1,76 @@
+<div class="priority-stats-container">
+  <div class="stats-header">
+    <h3>Priority Overview</h3>
+    <button class="btn btn-sm btn-outline-secondary" (click)="refresh()" [disabled]="loading">
+      <i *ngIf="!loading" class="fas fa-sync-alt"></i>
+      <span *ngIf="loading" class="spinner"></span>
+      Refresh
+    </button>
+  </div>
+
+  <div *ngIf="loading && !stats" class="loading-state">
+    <div class="spinner"></div>
+    Loading statistics...
+  </div>
+
+  <div *ngIf="error" class="error-state">
+    <p class="error-message">{{ error }}</p>
+    <button class="btn btn-sm btn-secondary" (click)="refresh()">Try Again</button>
+  </div>
+
+  <div *ngIf="stats && !loading" class="stats-content">
+    <div class="total-stats">
+      <div class="total-card">
+        <span class="total-number">{{ stats.totalMemos }}</span>
+        <span class="total-label">Total Memos</span>
+      </div>
+    </div>
+
+    <div class="priority-breakdown">
+      <div 
+        *ngFor="let config of priorityConfig" 
+        class="priority-stat-card">
+        
+        <div class="stat-header">
+          <i class="priority-icon" [ngClass]="config.icon" [style.color]="config.color"></i>
+          <span class="priority-label">{{ config.label }}</span>
+        </div>
+        
+        <div class="stat-numbers">
+          <span class="stat-count">{{ getStatValue(config.key) }}</span>
+          <span class="stat-percentage">({{ getPercentage(getStatValue(config.key)) }}%)</span>
+        </div>
+        
+        <div class="progress-bar">
+          <div 
+            class="progress-fill" 
+            [style.width.%]="getPercentage(getStatValue(config.key))"
+            [style.background-color]="config.color">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="insights" *ngIf="stats.totalMemos > 0">
+      <h4>Quick Insights</h4>
+      <ul class="insights-list">
+        <li *ngIf="getStatValue('high') > 0">
+          <strong>{{ getStatValue('high') }}</strong> high priority memos need immediate attention
+        </li>
+        <li *ngIf="getStatValue('medium') > getStatValue('high') && getStatValue('medium') > getStatValue('low')">
+          Most memos are <strong>medium priority</strong> - consider promoting urgent ones to high
+        </li>
+        <li *ngIf="getStatValue('low') > getStatValue('high') + getStatValue('medium')">
+          Most memos are <strong>low priority</strong> - you're managing your workload well!
+        </li>
+        <li *ngIf="getStatValue('high') + getStatValue('medium') + getStatValue('low') === 0">
+          No memos have been assigned priorities yet - start organizing your memos!
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div *ngIf="stats?.totalMemos === 0" class="empty-state">
+    <p>No memos found. Create some memos to see priority statistics!</p>
+  </div>
+</div>

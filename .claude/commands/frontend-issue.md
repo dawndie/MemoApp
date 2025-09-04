@@ -6,12 +6,11 @@
 ```
 
 ## Test Delegation Flow
-1. **Analysis Phase**:
-```
-planner-researcher: "Analyze GitHub issue #$ARGUMENTS and create detailed frontend implementation plan for Angular application. Return component architecture design, file changes needed, UI/UX specifications, service integration requirements, and testing strategy."
-```
 
 ### Phase 1: Requirements Analysis
+```
+frontend-specialist: "Analyze GitHub issue #$ARGUMENTS and create detailed frontend implementation plan for Angular application. Return component architecture design, file changes needed, UI/UX specifications, service integration requirements, and testing strategy."
+```
 Use the **frontend-specialist** agent to:
 - Fetch and analyze GitHub issue requirements using `gh` command
 - Catalog software requirements 
