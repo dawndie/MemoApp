@@ -21,7 +21,7 @@
      - Identify files to modify
 
   3. **Implementation** (Parent agent coordinates)
-     - Create feature branch
+     - Create feature branch (format: `feat-<issue-number>`)
      - Implement changes following analysis
      - Write tests
 
@@ -34,6 +34,8 @@
      - Stage changes
      - Create conventional commits
      - Push branch and create PR
+     - Comment on PR with test results and implementation details
+
 
   Execute each stage by calling the appropriate sub-agent and waiting for 
   completion before proceeding.

@@ -1,0 +1,1 @@
+ nhớ chạy nvm hạ node ver vẻ 20
