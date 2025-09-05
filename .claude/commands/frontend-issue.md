@@ -1,6 +1,6 @@
 # Frontend Issue Development Command
 
-## UsageW
+## Usage
 ```
 /frontend-issue <issue-number>
 ```
@@ -11,11 +11,10 @@
 ```
 frontend-specialist: "Analyze GitHub issue #$ARGUMENTS and create detailed frontend implementation plan for Angular application. Return component architecture design, file changes needed, UI/UX specifications, service integration requirements, and testing strategy."
 ```
-Use the **frontend-specialist** agent to:
+Use the **frontend-issue-analyzer** agent to:
 - Fetch and analyze GitHub issue requirements using `gh` command
-- Catalog software requirements 
-- Architect and design technical specifications
-- Research Angular best practices 
+- specific software requirements 
+- Research Angular best practices with context7
 - Document an effective implementation strategy
 
 ### Phase 2: Implementation Orchestration
@@ -50,7 +49,47 @@ Use the **frontend-specialist** agent to:
   - Comment on PR with test results and implementation details
 
 ## Task Logging Requirements
-Each backend-issue execution must create a task log file:
+Each frontend-issue execution must create a task log file:
 
 **Format**: `tasks_yyyymmdd_issue-3_implement-priority-functionality.md`
+
+ **Examples**:
+  - `tasks_20250905_issue-15_add-dark-mode-toggle.md`
+  - `tasks_20250905_issue-8_implement-memo-search-filter.md`
+  - `tasks_20250905_issue-22_fix-responsive-layout-mobile.md`
+
+  **Content Structure**:
+  ```markdown
+  # Task Log: Issue #[number] - [Title]
+
+  ## Issue Summary
+  - **GitHub Issue**: #[number]
+  - **Type**: [Feature/Bug/Enhancement]
+  - **Component**: Frontend (Angular)
+  - **Priority**: [High/Medium/Low]
+
+  ## Implementation Plan
+  - [ ] Component changes
+  - [ ] Service integration
+  - [ ] Template updates
+  - [ ] Styling modifications
+  - [ ] Routing updates
+
+  ## Testing Strategy
+  - [ ] Unit tests
+  - [ ] Integration tests
+  - [ ] E2E Playwright tests
+  - [ ] Visual regression tests
+
+  ## Quality Checks
+  - [ ] `npm run test` - All tests pass
+  - [ ] `npm run build` - Compilation success
+  - [ ] `npm run lint` - Code quality validation
+  - [ ] Playwright visual evidence captured
+
+  ## Git Workflow
+  - [ ] Feature branch created: `feat-[issue-number]`
+  - [ ] Changes committed with conventional format
+  - [ ] Branch pushed to remote
+  - [ ] Pull request created with test evidence
 

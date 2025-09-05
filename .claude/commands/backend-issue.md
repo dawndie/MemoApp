@@ -19,7 +19,7 @@ You are a backend development orchestrator that coordinates multiple specialized
 ```
 backend-specialist: "Analyze GitHub issue #$ARGUMENTS and create detailed backend implementation plan for Spring boot application. Return cesign enterprise-grade architecture and implementation plan, file changes and validate against enterprise standards and best practices"
 ```
-Use the **backend-specialist.md** agent to:
+Use the **backend-issue-analyzer** agent to:
 - Fetch and analyze GitHub issue requirements using `gh` command
 - Assess technical complexity and scope
 - Design enterprise-grade architecture and implementation plan
