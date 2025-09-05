@@ -36,10 +36,20 @@ Use the **frontend-specialist** agent to:
   - Start the application (`npm start` or `npm run dev`)
   - Use Playwright MCP to test implemented UI features
   - Capture screenshots of key functionality states
-  - Save all evidence to `evidence/frontend-issue-<number>/` folder
-  - Test user interactions, form submissions, data display
-  - Validate responsive design across different sizes
-  - Document test scenarios and results with visual proof
+
+  ### Phase 4: Documentation & Git Management
+- Create task specification and workflow action log in `tasks_yyyymmdd_issue-x_[task-content].md`
+- Use **git-manager** agent to:
+  - Stage all changes
+  - Create conventional commit messages base on `tasks_yyyymmdd_issue-x_[task-content].md` file
+  - Push branch to remote
+  - Create comprehensive pull request
+  - Comment on PR with test results and implementation details
+
+## Task Logging Requirements
+Each backend-issue execution must create a task log file:
+
+**Format**: `tasks_yyyymmdd_issue-3_implement-priority-functionality.md`
 
 ### Quality Standards
 - Modern Angular architecture patterns
@@ -52,18 +62,3 @@ Use the **frontend-specialist** agent to:
 - Proper documentation and git workflow
 - Cross-browser compatibility
 
-## Evidence Folder Structure
-```
-evidence/
-└── frontend-issue-<number>/
-    ├── test-scenarios.md
-    ├── before-implementation/
-    │   └── screenshots/
-    ├── after-implementation/
-    │   ├── desktop/
-    │   ├── tablet/
-    │   ├── mobile/
-    │   └── user-flows/
-    └── test-results/
-        └── playwright-report/
-```
