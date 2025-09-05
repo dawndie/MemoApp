@@ -4,9 +4,9 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Memo, Priority } from '../../models/memo.model';
 import { MemoService } from '../../services/memo.service';
+import { ModalService } from '../../services/modal.service';
 import { PrioritySelector } from '../priority-selector/priority-selector';
 import { PriorityStatsComponent } from '../priority-stats/priority-stats';
-
 @Component({
   selector: 'app-memo-list',
   imports: [
@@ -29,7 +29,10 @@ export class MemoList implements OnInit {
     { value: 'LOW', label: 'Low', color: '#28a745' }
   ];
 
-  constructor(private memoService: MemoService) {}
+  constructor(
+    private memoService: MemoService,
+    private modalService: ModalService
+  ) {}
 
   ngOnInit(): void {
     this.loadMemos();
@@ -53,17 +56,33 @@ export class MemoList implements OnInit {
     });
   }
 
-  deleteMemo(id: number): void {
-    if (confirm('Are you sure you want to delete this memo?')) {
-      this.memoService.deleteMemo(id).subscribe({
-        next: () => {
-          this.memos = this.memos.filter(memo => memo.id !== id);
-        },
-        error: (err) => {
-          this.error = 'Failed to delete memo';
-          console.error('Error deleting memo:', err);
-        }
+  async deleteMemo(id: number): Promise<void> {
+    const memo = this.memos.find(m => m.id === id);
+    if (!memo) return;
+
+    try {
+      const result = await this.modalService.confirm({
+        title: 'Delete Memo',
+        message: 'Are you sure you want to delete this memo? This action cannot be undone.',
+        confirmText: 'Delete Memo',
+        cancelText: 'Cancel',
+        type: 'danger',
+        data: { memoId: id, memoTitle: memo.title }
       });
+
+      if (result.confirmed) {
+        this.memoService.deleteMemo(id).subscribe({
+          next: () => {
+            this.memos = this.memos.filter(memo => memo.id !== id);
+          },
+          error: (err) => {
+            this.error = 'Failed to delete memo';
+            console.error('Error deleting memo:', err);
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error showing confirmation modal:', error);
     }
   }
 
