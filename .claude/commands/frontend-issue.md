@@ -40,18 +40,7 @@ Use the **frontend-specialist** agent to:
   - Validate responsive design across different sizes
   - Document test scenarios and results with visual proof
 
-### Quality Standards
-- Modern Angular architecture patterns
-- TypeScript best practices 
-- Responsive design and accessibility
-- Component-based architecture
-- Comprehensive testing (85%+ coverage)
-- **End-to-End Visual Testing**: Playwright MCP integration with screenshot evidence
-- Performance optimization
-- Proper documentation and git workflow
-- Cross-browser compatibility
-
-### Phase 4: Documentation & Git Management
+  ### Phase 4: Documentation & Git Management
 - Create task specification and workflow action log in `tasks_yyyymmdd_issue-x_[task-content].md`
 - Use **git-manager** agent to:
   - Stage all changes
@@ -64,3 +53,4 @@ Use the **frontend-specialist** agent to:
 Each backend-issue execution must create a task log file:
 
 **Format**: `tasks_yyyymmdd_issue-3_implement-priority-functionality.md`
+
