@@ -1,0 +1,66 @@
+<div 
+  class="modal-backdrop" 
+  [@backdropAnimation] 
+  (click)="onBackdropClick($event)"
+  *ngIf="showModal">
+  
+  <div 
+    class="modal-container" 
+    [@modalAnimation]
+    [class]="getModalTypeClass()"
+    role="dialog" 
+    aria-modal="true" 
+    [attr.aria-labelledby]="'modal-title'"
+    [attr.aria-describedby]="'modal-description'">
+    
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div class="modal-title-container">
+        <i [class]="getModalIcon()" class="modal-icon"></i>
+        <h3 id="modal-title" class="modal-title">{{ config.title }}</h3>
+      </div>
+      <button 
+        class="modal-close-btn" 
+        (click)="onCancel()" 
+        aria-label="Close modal"
+        type="button">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <p id="modal-description" class="modal-message">
+        {{ config.message }}
+      </p>
+      
+      <!-- Display additional data if provided (like memo title) -->
+      <div class="modal-data" *ngIf="config.data?.memoTitle">
+        <div class="memo-preview">
+          <strong>"{{ config.data.memoTitle }}"</strong>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button 
+        class="btn btn-cancel" 
+        (click)="onCancel()" 
+        type="button"
+        [attr.aria-label]="config.cancelText">
+        {{ config.cancelText }}
+      </button>
+      <button 
+        class="btn btn-confirm" 
+        [class.btn-danger]="config.type === 'danger'"
+        [class.btn-warning]="config.type === 'warning'"
+        [class.btn-primary]="config.type === 'info'"
+        (click)="onConfirm()" 
+        type="button"
+        [attr.aria-label]="config.confirmText">
+        {{ config.confirmText }}
+      </button>
+    </div>
+  </div>
+</div>
