@@ -22,16 +22,18 @@ describe('PrioritySelector', () => {
 
   it('should emit priority change event', () => {
     spyOn(component.priorityChange, 'emit');
+    const mockEvent = { target: { value: 'HIGH' } } as any;
     
-    component.onPriorityChange('HIGH');
+    component.onSelectChange(mockEvent);
     
     expect(component.priorityChange.emit).toHaveBeenCalledWith('HIGH');
   });
 
   it('should emit undefined when empty string is selected', () => {
     spyOn(component.priorityChange, 'emit');
+    const mockEvent = { target: { value: '' } } as any;
     
-    component.onPriorityChange('');
+    component.onSelectChange(mockEvent);
     
     expect(component.priorityChange.emit).toHaveBeenCalledWith(undefined);
   });

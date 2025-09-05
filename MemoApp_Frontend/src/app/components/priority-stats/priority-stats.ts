@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 import { PriorityStats, Priority } from '../../models/memo.model';
 import { MemoService } from '../../services/memo.service';
 
@@ -9,10 +10,11 @@ import { MemoService } from '../../services/memo.service';
   templateUrl: './priority-stats.html',
   styleUrl: './priority-stats.css'
 })
-export class PriorityStatsComponent implements OnInit {
+export class PriorityStatsComponent implements OnInit, OnDestroy {
   stats: PriorityStats | null = null;
   loading = false;
   error: string | null = null;
+  private memoUpdateSubscription?: Subscription;
 
   priorityConfig = [
     { key: 'high', label: 'High Priority', color: '#dc3545', icon: 'fas fa-exclamation-circle' },
@@ -24,6 +26,16 @@ export class PriorityStatsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadStats();
+    
+    this.memoUpdateSubscription = this.memoService.memoUpdated$.subscribe(() => {
+      this.loadStats();
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.memoUpdateSubscription) {
+      this.memoUpdateSubscription.unsubscribe();
+    }
   }
 
   loadStats(): void {

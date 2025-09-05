@@ -9,7 +9,9 @@ describe('PriorityStatsComponent', () => {
   let memoServiceSpy: jasmine.SpyObj<MemoService>;
 
   beforeEach(async () => {
-    const spy = jasmine.createSpyObj('MemoService', ['getPriorityStats']);
+    const spy = jasmine.createSpyObj('MemoService', ['getPriorityStats'], {
+      memoUpdated$: of(void 0)
+    });
 
     await TestBed.configureTestingModule({
       imports: [PriorityStatsComponent],
@@ -29,7 +31,11 @@ describe('PriorityStatsComponent', () => {
   });
 
   it('should load stats on init', () => {
-    const mockStats = { high: 5, medium: 10, low: 8, total: 23 };
+    const mockStats = { 
+      priorityCounts: { HIGH: 5, MEDIUM: 10, LOW: 8 },
+      totalMemos: 23,
+      mostCommonPriority: 'MEDIUM'
+    };
     memoServiceSpy.getPriorityStats.and.returnValue(of(mockStats));
 
     fixture.detectChanges();
@@ -48,14 +54,22 @@ describe('PriorityStatsComponent', () => {
   });
 
   it('should calculate percentage correctly', () => {
-    component.stats = { high: 5, medium: 10, low: 5, total: 20 };
+    component.stats = { 
+      priorityCounts: { HIGH: 5, MEDIUM: 10, LOW: 5 },
+      totalMemos: 20,
+      mostCommonPriority: 'MEDIUM'
+    };
 
     expect(component.getPercentage(5)).toBe(25);
     expect(component.getPercentage(10)).toBe(50);
   });
 
   it('should return 0 percentage when total is 0', () => {
-    component.stats = { high: 0, medium: 0, low: 0, total: 0 };
+    component.stats = { 
+      priorityCounts: { HIGH: 0, MEDIUM: 0, LOW: 0 },
+      totalMemos: 0,
+      mostCommonPriority: 'NONE'
+    };
 
     expect(component.getPercentage(0)).toBe(0);
   });
