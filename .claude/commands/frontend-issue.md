@@ -40,10 +40,10 @@ Use the **frontend-issue-analyzer** agent to:
   - Document test scenarios and results with visual proof
 
   ### Phase 4: Documentation & Git Management
-- Create task specification and workflow action log in `tasks_yyyymmdd_issue-x_[task-content].md`
-- Use **git-manager** agent to:
+  - Create task specification and workflow action log in folder `tasks` Specifically as  `tasks\yyyymmdd_issue-x_[task-content].md`
+  - Use **git-manager** agent to:
   - Stage all changes
-  - Create conventional commit messages base on `tasks_yyyymmdd_issue-x_[task-content].md` file
+  - Create conventional commit messages base on `tasks\tasks_yyyymmdd_issue-x_[task-content].md` file
   - Push branch to remote
   - Create comprehensive pull request
   - Comment on PR with test results and implementation details
@@ -51,12 +51,12 @@ Use the **frontend-issue-analyzer** agent to:
 ## Task Logging Requirements
 Each frontend-issue execution must create a task log file:
 
-**Format**: `tasks_yyyymmdd_issue-3_implement-priority-functionality.md`
+**Format**: `tasks\yyyymmdd_issue-3_implement-priority-functionality.md`
 
  **Examples**:
-  - `tasks_20250905_issue-15_add-dark-mode-toggle.md`
-  - `tasks_20250905_issue-8_implement-memo-search-filter.md`
-  - `tasks_20250905_issue-22_fix-responsive-layout-mobile.md`
+  - `tasks\20250905_issue-15_add-dark-mode-toggle.md`
+  - `tasks\20250905_issue-8_implement-memo-search-filter.md`
+  - `tasks\20250905_issue-22_fix-responsive-layout-mobile.md`
 
   **Content Structure**:
   ```markdown
