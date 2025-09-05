@@ -1,5 +1,12 @@
 package memoapp.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import memoapp.dto.BulkPriorityUpdateRequest;
 import memoapp.dto.PriorityStatistics;
@@ -11,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-
 import java.util.List;
 
 /**
@@ -21,6 +27,7 @@ import java.util.List;
  * The service now throws meaningful exceptions instead of returning null values,
  * so exception handling is managed by Spring's global exception handler.
  */
+@Tag(name = "Memo Management", description = "Operations for managing memos and notes")
 @RestController
 @RequestMapping("/api/memos")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -36,9 +43,16 @@ public class MemoController {
         this.memoService = memoService;
     }
 
+    @Operation(summary = "Get all memos", description = "Retrieve all memos with optional filtering by priority and sorting")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved memos",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Memo.class)))
+    })
     @GetMapping
     public List<Memo> getAllMemos(
+            @Parameter(description = "Filter by priority (comma-separated values: LOW, MEDIUM, HIGH)")
             @RequestParam(required = false) String priority,
+            @Parameter(description = "Sort order: asc or desc")
             @RequestParam(required = false) String sort) {
         
         // Handle priority filtering
@@ -59,71 +73,81 @@ public class MemoController {
         return memoService.getAllMemos();
     }
 
-    /**
-     * Simplified method that relies on service exception handling.
-     * The service throws MemoNotFoundException instead of returning null,
-     * which will be handled by Spring's exception handling mechanism.
-     */
+    @Operation(summary = "Get memo by ID", description = "Retrieve a specific memo by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved memo",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Memo.class))),
+            @ApiResponse(responseCode = "404", description = "Memo not found")
+    })
     @GetMapping("/{id}")
-    public Memo getMemoById(@PathVariable Long id) {
+    public Memo getMemoById(@Parameter(description = "ID of the memo to retrieve") @PathVariable Long id) {
         return memoService.getMemoById(id);
     }
 
-    /**
-     * Updated to use the new createMemo method name for better semantic clarity.
-     */
+    @Operation(summary = "Create a new memo", description = "Create a new memo with title and content")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Memo created successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Memo.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid memo data")
+    })
     @PostMapping
-    public Memo createMemo(@RequestBody Memo memo) {
+    public Memo createMemo(@Parameter(description = "Memo data") @RequestBody Memo memo) {
         return memoService.createMemo(memo);
     }
 
-    /**
-     * Simplified update method that relies on service validation and exception handling.
-     * The service handles existence checking and throws appropriate exceptions.
-     */
+    @Operation(summary = "Update a memo", description = "Update an existing memo by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Memo updated successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Memo.class))),
+            @ApiResponse(responseCode = "404", description = "Memo not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid memo data")
+    })
     @PutMapping("/{id}")
-    public Memo updateMemo(@PathVariable Long id, @RequestBody Memo memo) {
+    public Memo updateMemo(@Parameter(description = "ID of the memo to update") @PathVariable Long id, 
+                          @Parameter(description = "Updated memo data") @RequestBody Memo memo) {
         return memoService.updateMemo(id, memo);
     }
 
-    /**
-     * Simplified delete method that relies on service validation and exception handling.
-     * The service throws exceptions for non-existent memos.
-     */
+    @Operation(summary = "Delete a memo", description = "Delete a memo by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Memo deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Memo not found")
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMemo(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteMemo(@Parameter(description = "ID of the memo to delete") @PathVariable Long id) {
         memoService.deleteMemo(id);
         return ResponseEntity.noContent().build();
     }
     
-    /**
-     * Updates the priority of a specific memo.
-     * 
-     * @param id memo ID to update
-     * @param request priority update request
-     * @return updated memo
-     */
+    @Operation(summary = "Update memo priority", description = "Update the priority of a specific memo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Priority updated successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Memo.class))),
+            @ApiResponse(responseCode = "404", description = "Memo not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid priority data")
+    })
     @PutMapping("/{id}/priority")
-    public Memo updateMemoPriority(@PathVariable Long id, @Valid @RequestBody PriorityUpdateRequest request) {
+    public Memo updateMemoPriority(@Parameter(description = "ID of the memo to update") @PathVariable Long id, 
+                                  @Parameter(description = "Priority update request") @Valid @RequestBody PriorityUpdateRequest request) {
         return memoService.updateMemoPriority(id, request.getPriority());
     }
     
-    /**
-     * Bulk update priority for multiple memos.
-     * 
-     * @param request bulk priority update request
-     * @return list of updated memos
-     */
+    @Operation(summary = "Bulk update memo priorities", description = "Update priority for multiple memos")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Priorities updated successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Memo.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request data")
+    })
     @PostMapping("/bulk/priority")
-    public List<Memo> bulkUpdatePriority(@Valid @RequestBody BulkPriorityUpdateRequest request) {
+    public List<Memo> bulkUpdatePriority(@Parameter(description = "Bulk priority update request") @Valid @RequestBody BulkPriorityUpdateRequest request) {
         return memoService.bulkUpdatePriority(request);
     }
     
-    /**
-     * Get priority statistics for all memos.
-     * 
-     * @return priority statistics
-     */
+    @Operation(summary = "Get priority statistics", description = "Get statistics about memo priorities")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Statistics retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = PriorityStatistics.class)))
+    })
     @GetMapping("/stats/priority")
     public PriorityStatistics getPriorityStatistics() {
         return memoService.getPriorityStatistics();
