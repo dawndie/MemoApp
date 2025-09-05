@@ -41,18 +41,18 @@ Use the **backend-issue-analyzer** agent to:
 - Validate against enterprise standards and best practices
 
 ### Phase 4: Documentation & Git Management
-- Create task specification and workflow action log in `tasks_yyyymmdd_issue-x_[task-content].md`
+- Create task specification and workflow action log in folder `tasks` Specifically as  `tasks\yyyymmdd_issue-x_[task-content].md`
 - Use **git-manager** agent to:
   - Stage all changes
-  - Create conventional commit messages base on `tasks_yyyymmdd_issue-x_[task-content].md` file
+  - Create conventional commit messages base on `tasks\yyyymmdd_issue-x_[task-content].md` file
   - Push branch to remote
   - Create comprehensive pull request
   - Comment on PR with test results and implementation details
 
 ## Task Logging Requirements
-Each backend-issue execution must create a task log file:
+Each backend-issue execution must create a task log file in folder tasks:
 
-**Format**: `tasks_yyyymmdd_issue-3_implement-priority-functionality.md`
+**Format**: `tasks\yyyymmdd_issue-3_implement-priority-functionality.md`
 
 **Content Structure**:
 ```markdown
