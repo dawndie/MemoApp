@@ -33,11 +33,10 @@ Use the **frontend-issue-analyzer** agent to:
 - Run `npm run lint` for code quality validation
 - **Playwright End-to-End Testing with Visual Evidence**:
   - Start the application (`npm start` or `npm run dev`)
-  - Use Playwright MCP to test implemented UI features
+  - Use Playwright MCP to test E2E implemented UI features
   - Capture screenshots of key functionality states
   - Test user interactions, form submissions, data display
-  - Validate responsive design across different sizes
-  - Document test scenarios and results with visual proof
+  - Document test scenarios
 
   ### Phase 4: Documentation & Git Management
   - Create task specification and workflow action log in folder `tasks` Specifically as  `tasks\yyyymmdd_issue-x_[task-content].md`
