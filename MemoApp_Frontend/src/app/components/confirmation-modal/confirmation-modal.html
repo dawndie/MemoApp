@@ -1,0 +1,30 @@
+<div *ngIf="isVisible" [class]="getModalClass()" (click)="onCancel()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div [class]="getModalContentClass()">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div class="modal-icon">
+          <i *ngIf="type === 'danger'" class="fas fa-exclamation-triangle"></i>
+          <i *ngIf="type === 'warning'" class="fas fa-exclamation-circle"></i>
+          <i *ngIf="type === 'info'" class="fas fa-info-circle"></i>
+        </div>
+        <h3>{{ title }}</h3>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <p>{{ message }}</p>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="onCancel()">
+          {{ cancelButtonText }}
+        </button>
+        <button [class]="getConfirmButtonClass()" (click)="onConfirm()">
+          {{ confirmButtonText }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
