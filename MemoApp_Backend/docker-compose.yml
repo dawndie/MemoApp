@@ -5,11 +5,11 @@ services:
     image: postgres:15-alpine
     container_name: memo-postgres
     environment:
-      POSTGRES_DB: memoapp
-      POSTGRES_USER: memoapp
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -21,11 +21,11 @@ services:
     depends_on:
       - postgres
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/memoapp
-      SPRING_DATASOURCE_USERNAME: memoapp
-      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
     ports:
-      - "1919:1919"
+      - "${APP_PORT}:8081"
     networks:
       - memo-network
 
