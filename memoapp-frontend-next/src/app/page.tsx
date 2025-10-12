@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
@@ -49,6 +50,73 @@ export default function Home() {
           >
             Read our docs
           </a>
+        </div>
+
+        {/* Button Test Section */}
+        <div className="flex flex-col gap-8 w-full max-w-2xl">
+          <h2 className="text-2xl font-bold">Button Variants Test</h2>
+
+          {/* Variants */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Variants:</h3>
+            <div className="flex flex-wrap gap-3">
+              <Button variant="default">Default</Button>
+              <Button variant="destructive">Destructive</Button>
+              <Button variant="outline">Outline</Button>
+              <Button variant="secondary">Secondary</Button>
+              <Button variant="ghost">Ghost</Button>
+              <Button variant="link">Link</Button>
+            </div>
+          </div>
+
+          {/* Sizes */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Sizes:</h3>
+            <div className="flex flex-wrap gap-3 items-center">
+              <Button size="sm">Small</Button>
+              <Button size="default">Default</Button>
+              <Button size="lg">Large</Button>
+            </div>
+          </div>
+
+          {/* Icon Buttons */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Icon Sizes:</h3>
+            <div className="flex flex-wrap gap-3 items-center">
+              <Button size="icon-sm" variant="outline">🔍</Button>
+              <Button size="icon" variant="outline">🔍</Button>
+              <Button size="icon-lg" variant="outline">🔍</Button>
+            </div>
+          </div>
+
+          {/* Disabled State */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Disabled State:</h3>
+            <div className="flex flex-wrap gap-3">
+              <Button disabled>Disabled Default</Button>
+              <Button variant="destructive" disabled>Disabled Destructive</Button>
+              <Button variant="outline" disabled>Disabled Outline</Button>
+            </div>
+          </div>
+
+          {/* With Icons */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">With Icons:</h3>
+            <div className="flex flex-wrap gap-3">
+              <Button>
+                <span>✓</span>
+                Save
+              </Button>
+              <Button variant="destructive">
+                <span>🗑️</span>
+                Delete
+              </Button>
+              <Button variant="outline">
+                <span>↻</span>
+                Refresh
+              </Button>
+            </div>
+          </div>
         </div>
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
