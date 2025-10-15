@@ -76,29 +76,6 @@ public class MemoService {
     }
     
     /**
-     * Creates a new memo in the system.
-     * 
-     * Includes comprehensive validation and follows the principle of
-     * defensive programming by validating all inputs before processing.
-     * 
-     * @param memo the memo to create
-     * @return the created memo with generated ID and timestamps
-     * @throws MemoValidationException if the memo is invalid
-     */
-    @Transactional
-    public Memo createMemo(Memo memo) {
-        validateMemoForCreation(memo);
-        
-        // Clear the ID to ensure it's treated as a new entity
-        // This follows defensive programming principles
-        if (memo.getId() != null) {
-            memo.setId(null);
-        }
-        
-        return memoRepository.save(memo);
-    }
-    
-    /**
      * Updates an existing memo in the system.
      * 
      * Ensures the memo exists before attempting to update it,
@@ -320,24 +297,6 @@ public class MemoService {
         if (id <= 0) {
             throw new MemoValidationException("Memo ID must be a positive number", "id", id);
         }
-    }
-    
-    /**
-     * Validates a memo object for creation operations.
-     * 
-     * Comprehensive validation following defensive programming principles.
-     * Separated from update validation to follow Single Responsibility Principle.
-     * 
-     * @param memo the memo to validate
-     * @throws MemoValidationException if the memo is invalid
-     */
-    private void validateMemoForCreation(Memo memo) {
-        if (memo == null) {
-            throw new MemoValidationException("Memo cannot be null");
-        }
-        
-        validateMemoTitle(memo.getTitle());
-        validateMemoContent(memo.getContent());
     }
     
     /**

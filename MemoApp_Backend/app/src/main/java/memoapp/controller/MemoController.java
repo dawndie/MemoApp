@@ -83,17 +83,6 @@ public class MemoController {
         return memoService.getMemoById(id);
     }
 
-    @Operation(summary = "Create a new memo", description = "Create a new memo with title and content")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Memo created successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Memo.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid memo data")
-    })
-    @PostMapping
-    public Memo createMemo(@Parameter(description = "Memo data") @RequestBody Memo memo) {
-        return memoService.createMemo(memo);
-    }
-
     @Operation(summary = "Update a memo", description = "Update an existing memo by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Memo updated successfully",

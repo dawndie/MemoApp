@@ -114,33 +114,6 @@ class MemoControllerTest {
     }
 
     @Test
-    void createMemo_WithValidData_ShouldReturnCreatedMemo() throws Exception {
-        Memo newMemo = new Memo();
-        newMemo.setTitle("New Memo");
-        newMemo.setContent("New content");
-
-        Memo savedMemo = new Memo();
-        savedMemo.setId(3L);
-        savedMemo.setTitle("New Memo");
-        savedMemo.setContent("New content");
-        savedMemo.setCreatedAt(LocalDateTime.now());
-        savedMemo.setUpdatedAt(LocalDateTime.now());
-
-        when(memoService.createMemo(any(Memo.class))).thenReturn(savedMemo);
-
-        mockMvc.perform(post("/api/memos")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newMemo)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(3)))
-                .andExpect(jsonPath("$.title", is("New Memo")))
-                .andExpect(jsonPath("$.content", is("New content")));
-
-        verify(memoService, times(1)).createMemo(any(Memo.class));
-    }
-
-    @Test
     void updateMemo_WhenMemoExists_ShouldReturnUpdatedMemo() throws Exception {
         Memo updateRequest = new Memo();
         updateRequest.setTitle("Updated Memo");
