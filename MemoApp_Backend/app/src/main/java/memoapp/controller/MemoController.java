@@ -30,7 +30,6 @@ import java.util.List;
 @Tag(name = "Memo Management", description = "Operations for managing memos and notes")
 @RestController
 @RequestMapping("/api/memos")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class MemoController {
 
     private final MemoService memoService;
