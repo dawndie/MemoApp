@@ -6,11 +6,12 @@ import { Memo, Priority } from '../../models/memo.model';
 import { MemoService } from '../../services/memo.service';
 import { PrioritySelector } from '../priority-selector/priority-selector';
 import { PriorityStatsComponent } from '../priority-stats/priority-stats';
+import { ConfirmationModal } from '../confirmation-modal/confirmation-modal';
 
 @Component({
   selector: 'app-memo-list',
   imports: [
-    CommonModule, RouterModule, FormsModule, PrioritySelector, PriorityStatsComponent
+    CommonModule, RouterModule, FormsModule, PrioritySelector, PriorityStatsComponent, ConfirmationModal
   ],
   templateUrl: './memo-list.html',
   styleUrl: './memo-list.css'
@@ -22,6 +23,10 @@ export class MemoList implements OnInit {
   selectedPriorityFilter = '';
   selectedSort = '';
   selectedMemos = new Set<number>();
+
+  // Modal properties
+  showDeleteModal = false;
+  memoToDelete: number | null = null;
 
   priorities: { value: Priority; label: string; color: string }[] = [
     { value: 'HIGH', label: 'High', color: '#dc3545' },
@@ -54,17 +59,35 @@ export class MemoList implements OnInit {
   }
 
   deleteMemo(id: number): void {
-    if (confirm('Are you sure you want to delete this memo?')) {
-      this.memoService.deleteMemo(id).subscribe({
+    this.memoToDelete = id;
+    this.showDeleteModal = true;
+  }
+
+  confirmDeleteMemo(): void {
+    if (this.memoToDelete !== null) {
+      this.memoService.deleteMemo(this.memoToDelete).subscribe({
         next: () => {
-          this.memos = this.memos.filter(memo => memo.id !== id);
+          this.memos = this.memos.filter(memo => memo.id !== this.memoToDelete);
+          this.closeDeleteModal();
         },
         error: (err) => {
           this.error = 'Failed to delete memo';
           console.error('Error deleting memo:', err);
+          this.closeDeleteModal();
         }
       });
     }
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.memoToDelete = null;
+  }
+
+  getMemoToDeleteTitle(): string {
+    if (this.memoToDelete === null) return '';
+    const memo = this.memos.find(m => m.id === this.memoToDelete);
+    return memo ? memo.title : '';
   }
 
   formatDate(dateString: string): string {
@@ -107,6 +130,10 @@ export class MemoList implements OnInit {
         console.error('Error updating memo priority:', err);
       }
     });
+  }
+
+  refreshMemos(): void {
+    this.loadMemos();
   }
 
   onBulkPriorityChange(priority: Priority | undefined): void {
