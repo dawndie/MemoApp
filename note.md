@@ -1,4 +1,0 @@
-- giới thiệu về cấu trúc Project
-- giới thiệu cấu trúc của .claude
-- Demo FEAT: Change alert to confirm modal popup thằng prompt thống thương
-- Demo create backend for authen/author function
