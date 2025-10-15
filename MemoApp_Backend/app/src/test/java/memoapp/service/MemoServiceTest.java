@@ -445,4 +445,385 @@ class MemoServiceTest {
         assertEquals(0L, result.getTotalMemos());
         assertEquals(Priority.NONE, result.getMostCommonPriority());
     }
+
+    // ===============================
+    // Create Memo Tests (Feature #15)
+    // ===============================
+
+    @Test
+    void createMemo_WithValidInput_ShouldCreateAndReturnMemo() {
+        // Arrange
+        String title = "New Memo Title";
+        String content = "This is the memo content";
+        Priority priority = Priority.HIGH;
+
+        Memo savedMemo = new Memo(title, content, priority);
+        savedMemo.setId(1L);
+        savedMemo.setCreatedAt(LocalDateTime.now());
+        savedMemo.setUpdatedAt(LocalDateTime.now());
+
+        when(memoRepository.save(any(Memo.class))).thenReturn(savedMemo);
+
+        // Act
+        Memo result = memoService.createMemo(title, content, priority);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+        assertEquals(title, result.getTitle());
+        assertEquals(content, result.getContent());
+        assertEquals(priority, result.getPriority());
+        assertNotNull(result.getCreatedAt());
+        assertNotNull(result.getUpdatedAt());
+        verify(memoRepository, times(1)).save(any(Memo.class));
+    }
+
+    @Test
+    void createMemo_WithNullTitle_ShouldThrowMemoValidationException() {
+        // Act & Assert
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () ->
+            memoService.createMemo(null, "Content", Priority.MEDIUM));
+
+        assertTrue(exception.getMessage().contains("title cannot be null or empty"));
+        assertEquals("title", exception.getFieldName());
+        verify(memoRepository, never()).save(any());
+    }
+
+    @Test
+    void createMemo_WithEmptyTitle_ShouldThrowMemoValidationException() {
+        // Act & Assert
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () ->
+            memoService.createMemo("", "Content", Priority.MEDIUM));
+
+        assertTrue(exception.getMessage().contains("title cannot be null or empty"));
+        assertEquals("title", exception.getFieldName());
+        verify(memoRepository, never()).save(any());
+    }
+
+    @Test
+    void createMemo_WithBlankTitle_ShouldThrowMemoValidationException() {
+        // Act & Assert
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () ->
+            memoService.createMemo("   ", "Content", Priority.MEDIUM));
+
+        assertTrue(exception.getMessage().contains("title cannot be null or empty"));
+        assertEquals("title", exception.getFieldName());
+        verify(memoRepository, never()).save(any());
+    }
+
+    @Test
+    void createMemo_WithTitleExceeding255Characters_ShouldThrowMemoValidationException() {
+        // Arrange - Create a title with 256 characters
+        String longTitle = "a".repeat(256);
+
+        // Act & Assert
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () ->
+            memoService.createMemo(longTitle, "Content", Priority.MEDIUM));
+
+        assertTrue(exception.getMessage().contains("cannot exceed 255 characters"));
+        assertEquals("title", exception.getFieldName());
+        verify(memoRepository, never()).save(any());
+    }
+
+    @Test
+    void createMemo_WithTitleExactly255Characters_ShouldSucceed() {
+        // Arrange - Create a title with exactly 255 characters
+        String maxLengthTitle = "a".repeat(255);
+
+        Memo savedMemo = new Memo(maxLengthTitle, "Content", Priority.LOW);
+        savedMemo.setId(1L);
+        savedMemo.setCreatedAt(LocalDateTime.now());
+        savedMemo.setUpdatedAt(LocalDateTime.now());
+
+        when(memoRepository.save(any(Memo.class))).thenReturn(savedMemo);
+
+        // Act
+        Memo result = memoService.createMemo(maxLengthTitle, "Content", Priority.LOW);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(maxLengthTitle, result.getTitle());
+        verify(memoRepository, times(1)).save(any(Memo.class));
+    }
+
+    @Test
+    void createMemo_WithNullContent_ShouldThrowMemoValidationException() {
+        // Act & Assert
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () ->
+            memoService.createMemo("Title", null, Priority.MEDIUM));
+
+        assertTrue(exception.getMessage().contains("content cannot be null or empty"));
+        assertEquals("content", exception.getFieldName());
+        verify(memoRepository, never()).save(any());
+    }
+
+    @Test
+    void createMemo_WithEmptyContent_ShouldThrowMemoValidationException() {
+        // Act & Assert
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () ->
+            memoService.createMemo("Title", "", Priority.MEDIUM));
+
+        assertTrue(exception.getMessage().contains("content cannot be null or empty"));
+        assertEquals("content", exception.getFieldName());
+        verify(memoRepository, never()).save(any());
+    }
+
+    @Test
+    void createMemo_WithBlankContent_ShouldThrowMemoValidationException() {
+        // Act & Assert
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () ->
+            memoService.createMemo("Title", "   ", Priority.MEDIUM));
+
+        assertTrue(exception.getMessage().contains("content cannot be null or empty"));
+        assertEquals("content", exception.getFieldName());
+        verify(memoRepository, never()).save(any());
+    }
+
+    @Test
+    void createMemo_WithContentExceeding10000Characters_ShouldThrowMemoValidationException() {
+        // Arrange - Create content with 10,001 characters
+        String longContent = "a".repeat(10001);
+
+        // Act & Assert
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () ->
+            memoService.createMemo("Title", longContent, Priority.MEDIUM));
+
+        assertTrue(exception.getMessage().contains("cannot exceed 10,000 characters"));
+        assertEquals("content", exception.getFieldName());
+        verify(memoRepository, never()).save(any());
+    }
+
+    @Test
+    void createMemo_WithContentExactly10000Characters_ShouldSucceed() {
+        // Arrange - Create content with exactly 10,000 characters
+        String maxLengthContent = "a".repeat(10000);
+
+        Memo savedMemo = new Memo("Title", maxLengthContent, Priority.HIGH);
+        savedMemo.setId(1L);
+        savedMemo.setCreatedAt(LocalDateTime.now());
+        savedMemo.setUpdatedAt(LocalDateTime.now());
+
+        when(memoRepository.save(any(Memo.class))).thenReturn(savedMemo);
+
+        // Act
+        Memo result = memoService.createMemo("Title", maxLengthContent, Priority.HIGH);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(maxLengthContent, result.getContent());
+        verify(memoRepository, times(1)).save(any(Memo.class));
+    }
+
+    @Test
+    void createMemo_WithNullPriority_ShouldThrowMemoValidationException() {
+        // Act & Assert
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () ->
+            memoService.createMemo("Title", "Content", null));
+
+        assertTrue(exception.getMessage().contains("Priority cannot be null"));
+        assertEquals("priority", exception.getFieldName());
+        verify(memoRepository, never()).save(any());
+    }
+
+    @Test
+    void createMemo_WithLowPriority_ShouldSucceed() {
+        // Arrange
+        Memo savedMemo = new Memo("Title", "Content", Priority.LOW);
+        savedMemo.setId(1L);
+        savedMemo.setCreatedAt(LocalDateTime.now());
+        savedMemo.setUpdatedAt(LocalDateTime.now());
+
+        when(memoRepository.save(any(Memo.class))).thenReturn(savedMemo);
+
+        // Act
+        Memo result = memoService.createMemo("Title", "Content", Priority.LOW);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(Priority.LOW, result.getPriority());
+        verify(memoRepository, times(1)).save(any(Memo.class));
+    }
+
+    @Test
+    void createMemo_WithMediumPriority_ShouldSucceed() {
+        // Arrange
+        Memo savedMemo = new Memo("Title", "Content", Priority.MEDIUM);
+        savedMemo.setId(1L);
+        savedMemo.setCreatedAt(LocalDateTime.now());
+        savedMemo.setUpdatedAt(LocalDateTime.now());
+
+        when(memoRepository.save(any(Memo.class))).thenReturn(savedMemo);
+
+        // Act
+        Memo result = memoService.createMemo("Title", "Content", Priority.MEDIUM);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(Priority.MEDIUM, result.getPriority());
+        verify(memoRepository, times(1)).save(any(Memo.class));
+    }
+
+    @Test
+    void createMemo_WithHighPriority_ShouldSucceed() {
+        // Arrange
+        Memo savedMemo = new Memo("Title", "Content", Priority.HIGH);
+        savedMemo.setId(1L);
+        savedMemo.setCreatedAt(LocalDateTime.now());
+        savedMemo.setUpdatedAt(LocalDateTime.now());
+
+        when(memoRepository.save(any(Memo.class))).thenReturn(savedMemo);
+
+        // Act
+        Memo result = memoService.createMemo("Title", "Content", Priority.HIGH);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(Priority.HIGH, result.getPriority());
+        verify(memoRepository, times(1)).save(any(Memo.class));
+    }
+
+    @Test
+    void createMemo_WithNonePriority_ShouldSucceed() {
+        // Arrange
+        Memo savedMemo = new Memo("Title", "Content", Priority.NONE);
+        savedMemo.setId(1L);
+        savedMemo.setCreatedAt(LocalDateTime.now());
+        savedMemo.setUpdatedAt(LocalDateTime.now());
+
+        when(memoRepository.save(any(Memo.class))).thenReturn(savedMemo);
+
+        // Act
+        Memo result = memoService.createMemo("Title", "Content", Priority.NONE);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(Priority.NONE, result.getPriority());
+        verify(memoRepository, times(1)).save(any(Memo.class));
+    }
+
+    @Test
+    void createMemo_ShouldSetTimestampsAutomatically() {
+        // Arrange
+        LocalDateTime beforeCreation = LocalDateTime.now().minusSeconds(1);
+
+        Memo savedMemo = new Memo("Title", "Content", Priority.MEDIUM);
+        savedMemo.setId(1L);
+        savedMemo.setCreatedAt(LocalDateTime.now());
+        savedMemo.setUpdatedAt(LocalDateTime.now());
+
+        when(memoRepository.save(any(Memo.class))).thenReturn(savedMemo);
+
+        // Act
+        Memo result = memoService.createMemo("Title", "Content", Priority.MEDIUM);
+
+        // Assert
+        assertNotNull(result.getCreatedAt());
+        assertNotNull(result.getUpdatedAt());
+        assertTrue(result.getCreatedAt().isAfter(beforeCreation) || result.getCreatedAt().isEqual(beforeCreation));
+        assertTrue(result.getUpdatedAt().isAfter(beforeCreation) || result.getUpdatedAt().isEqual(beforeCreation));
+        verify(memoRepository, times(1)).save(any(Memo.class));
+    }
+
+    @Test
+    void createMemo_ShouldCallRepositorySaveOnce() {
+        // Arrange
+        Memo savedMemo = new Memo("Title", "Content", Priority.MEDIUM);
+        savedMemo.setId(1L);
+        savedMemo.setCreatedAt(LocalDateTime.now());
+        savedMemo.setUpdatedAt(LocalDateTime.now());
+
+        when(memoRepository.save(any(Memo.class))).thenReturn(savedMemo);
+
+        // Act
+        memoService.createMemo("Title", "Content", Priority.MEDIUM);
+
+        // Assert - Verify save was called exactly once
+        verify(memoRepository, times(1)).save(any(Memo.class));
+    }
+
+    @Test
+    void createMemo_WithSpecialCharactersInTitle_ShouldSucceed() {
+        // Arrange
+        String titleWithSpecialChars = "Test @#$% Memo & Special *Characters*";
+
+        Memo savedMemo = new Memo(titleWithSpecialChars, "Content", Priority.MEDIUM);
+        savedMemo.setId(1L);
+        savedMemo.setCreatedAt(LocalDateTime.now());
+        savedMemo.setUpdatedAt(LocalDateTime.now());
+
+        when(memoRepository.save(any(Memo.class))).thenReturn(savedMemo);
+
+        // Act
+        Memo result = memoService.createMemo(titleWithSpecialChars, "Content", Priority.MEDIUM);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(titleWithSpecialChars, result.getTitle());
+        verify(memoRepository, times(1)).save(any(Memo.class));
+    }
+
+    @Test
+    void createMemo_WithSpecialCharactersInContent_ShouldSucceed() {
+        // Arrange
+        String contentWithSpecialChars = "Content with special chars: !@#$%^&*()_+-=[]{}|;':\",./<>?";
+
+        Memo savedMemo = new Memo("Title", contentWithSpecialChars, Priority.MEDIUM);
+        savedMemo.setId(1L);
+        savedMemo.setCreatedAt(LocalDateTime.now());
+        savedMemo.setUpdatedAt(LocalDateTime.now());
+
+        when(memoRepository.save(any(Memo.class))).thenReturn(savedMemo);
+
+        // Act
+        Memo result = memoService.createMemo("Title", contentWithSpecialChars, Priority.MEDIUM);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(contentWithSpecialChars, result.getContent());
+        verify(memoRepository, times(1)).save(any(Memo.class));
+    }
+
+    @Test
+    void createMemo_WithUnicodeCharacters_ShouldSucceed() {
+        // Arrange
+        String titleWithUnicode = "Test Memo 测试 メモ 테스트";
+        String contentWithUnicode = "Unicode content: 你好世界 こんにちは 안녕하세요 🎉🎊";
+
+        Memo savedMemo = new Memo(titleWithUnicode, contentWithUnicode, Priority.MEDIUM);
+        savedMemo.setId(1L);
+        savedMemo.setCreatedAt(LocalDateTime.now());
+        savedMemo.setUpdatedAt(LocalDateTime.now());
+
+        when(memoRepository.save(any(Memo.class))).thenReturn(savedMemo);
+
+        // Act
+        Memo result = memoService.createMemo(titleWithUnicode, contentWithUnicode, Priority.MEDIUM);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(titleWithUnicode, result.getTitle());
+        assertEquals(contentWithUnicode, result.getContent());
+        verify(memoRepository, times(1)).save(any(Memo.class));
+    }
+
+    @Test
+    void createMemo_WithNewlinesInContent_ShouldSucceed() {
+        // Arrange
+        String contentWithNewlines = "Line 1\nLine 2\nLine 3\n\nLine 5";
+
+        Memo savedMemo = new Memo("Title", contentWithNewlines, Priority.MEDIUM);
+        savedMemo.setId(1L);
+        savedMemo.setCreatedAt(LocalDateTime.now());
+        savedMemo.setUpdatedAt(LocalDateTime.now());
+
+        when(memoRepository.save(any(Memo.class))).thenReturn(savedMemo);
+
+        // Act
+        Memo result = memoService.createMemo("Title", contentWithNewlines, Priority.MEDIUM);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(contentWithNewlines, result.getContent());
+        verify(memoRepository, times(1)).save(any(Memo.class));
+    }
 }

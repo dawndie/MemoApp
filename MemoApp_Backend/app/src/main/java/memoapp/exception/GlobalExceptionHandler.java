@@ -2,12 +2,16 @@ package memoapp.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,8 +55,45 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles Bean Validation exceptions (e.g., @Valid annotation failures).
+     *
+     * This method handles validation errors from request DTOs that use
+     * Bean Validation annotations like @NotBlank, @NotNull, @Size, etc.
+     *
+     * @param ex the validation exception that was thrown
+     * @param request the web request during which the exception was thrown
+     * @return ResponseEntity with detailed validation errors and HTTP 400 status
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex, WebRequest request) {
+
+        Map<String, Object> body = createErrorBody(
+            HttpStatus.BAD_REQUEST.value(),
+            "Validation Error",
+            "Invalid request data. Please check the errors field for details.",
+            request.getDescription(false)
+        );
+
+        // Extract field-specific validation errors
+        List<Map<String, String>> errors = new ArrayList<>();
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            Map<String, String> errorDetails = new LinkedHashMap<>();
+            errorDetails.put("field", error.getField());
+            errorDetails.put("rejectedValue", error.getRejectedValue() != null ? error.getRejectedValue().toString() : "null");
+            errorDetails.put("message", error.getDefaultMessage());
+            errors.add(errorDetails);
+        }
+
+        body.put("errors", errors);
+        body.put("errorCount", errors.size());
+
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
      * Handles MemoValidationException and returns HTTP 400 Bad Request.
-     * 
+     *
      * @param ex the exception that was thrown
      * @param request the web request during which the exception was thrown
      * @return ResponseEntity with error details and HTTP 400 status
@@ -60,14 +101,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MemoValidationException.class)
     public ResponseEntity<Map<String, Object>> handleMemoValidationException(
             MemoValidationException ex, WebRequest request) {
-        
+
         Map<String, Object> body = createErrorBody(
             HttpStatus.BAD_REQUEST.value(),
             "Validation Error",
             ex.getMessage(),
             request.getDescription(false)
         );
-        
+
         // Add validation-specific details if available
         if (ex.getFieldName() != null) {
             body.put("field", ex.getFieldName());
@@ -75,7 +116,7 @@ public class GlobalExceptionHandler {
         if (ex.getRejectedValue() != null) {
             body.put("rejectedValue", ex.getRejectedValue());
         }
-        
+
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 

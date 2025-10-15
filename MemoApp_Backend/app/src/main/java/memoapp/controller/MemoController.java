@@ -9,11 +9,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import memoapp.dto.BulkPriorityUpdateRequest;
+import memoapp.dto.CreateMemoRequest;
+import memoapp.dto.MemoResponse;
 import memoapp.dto.PriorityStatistics;
 import memoapp.dto.PriorityUpdateRequest;
 import memoapp.entity.Memo;
 import memoapp.entity.Priority;
 import memoapp.service.MemoService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,6 +73,31 @@ public class MemoController {
         }
         
         return memoService.getAllMemos();
+    }
+
+    @Operation(summary = "Create a new memo", description = "Create a new memo with title, content, and priority")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Memo created successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = MemoResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid memo data or validation error")
+    })
+    @PostMapping
+    public ResponseEntity<MemoResponse> createMemo(
+            @Parameter(description = "Memo creation request with title, content, and priority")
+            @Valid @RequestBody CreateMemoRequest request) {
+
+        // Create the memo using the service layer
+        Memo createdMemo = memoService.createMemo(
+                request.getTitle(),
+                request.getContent(),
+                request.getPriority()
+        );
+
+        // Convert entity to DTO for response
+        MemoResponse response = MemoResponse.fromEntity(createdMemo);
+
+        // Return 201 Created with the newly created memo
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @Operation(summary = "Get memo by ID", description = "Retrieve a specific memo by its ID")

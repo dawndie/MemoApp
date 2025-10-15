@@ -15,8 +15,9 @@ public class Memo {
     @NotBlank(message = "Title is required")
     @Column(nullable = false)
     private String title;
-    
-    @Column(columnDefinition = "TEXT")
+
+    @NotBlank(message = "Content is required")
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
     
     @Column(name = "created_at", nullable = false, updatable = false)

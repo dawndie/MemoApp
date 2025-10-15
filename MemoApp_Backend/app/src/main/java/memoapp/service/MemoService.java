@@ -337,10 +337,10 @@ public class MemoService {
     
     /**
      * Validates memo content field.
-     * 
+     *
      * Focused validation method following Single Responsibility Principle.
      * Content can be null or empty, but if present, should not exceed reasonable limits.
-     * 
+     *
      * @param content the content to validate
      * @throws MemoValidationException if the content is invalid
      */
@@ -348,5 +348,39 @@ public class MemoService {
         if (content != null && content.length() > 10000) {
             throw new MemoValidationException("Memo content cannot exceed 10,000 characters", "content", content);
         }
+    }
+
+    /**
+     * Creates a new memo in the system.
+     *
+     * This method validates the input data and persists a new memo to the database.
+     * It follows the Single Responsibility Principle by focusing solely on memo creation logic.
+     *
+     * @param title the memo title
+     * @param content the memo content
+     * @param priority the memo priority level
+     * @return the newly created memo with generated ID and timestamps
+     * @throws MemoValidationException if any input field is invalid
+     */
+    @Transactional
+    public Memo createMemo(String title, String content, Priority priority) {
+        // Validate all input fields
+        validateMemoTitle(title);
+
+        // Validate content - it's required for creation
+        if (!StringUtils.hasText(content)) {
+            throw new MemoValidationException("Memo content cannot be null or empty", "content", content);
+        }
+        validateMemoContent(content);
+
+        // Validate priority
+        if (priority == null) {
+            throw new MemoValidationException("Priority cannot be null", "priority", null);
+        }
+
+        // Create and save the new memo
+        Memo memo = new Memo(title, content, priority);
+
+        return memoRepository.save(memo);
     }
 }
