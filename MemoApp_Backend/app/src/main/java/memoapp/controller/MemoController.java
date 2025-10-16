@@ -9,11 +9,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import memoapp.dto.BulkPriorityUpdateRequest;
+import memoapp.dto.CreateMemoRequest;
 import memoapp.dto.PriorityStatistics;
 import memoapp.dto.PriorityUpdateRequest;
 import memoapp.entity.Memo;
 import memoapp.entity.Priority;
 import memoapp.service.MemoService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -81,6 +83,20 @@ public class MemoController {
     @GetMapping("/{id}")
     public Memo getMemoById(@Parameter(description = "ID of the memo to retrieve") @PathVariable Long id) {
         return memoService.getMemoById(id);
+    }
+
+    @Operation(summary = "Create a new memo", description = "Create a new memo with title, content, and optional priority")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Memo created successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Memo.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid memo data")
+    })
+    @PostMapping
+    public ResponseEntity<Memo> createMemo(
+            @Parameter(description = "Memo creation request with title, content, and optional priority")
+            @Valid @RequestBody CreateMemoRequest request) {
+        Memo createdMemo = memoService.createMemo(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdMemo);
     }
 
     @Operation(summary = "Update a memo", description = "Update an existing memo by its ID")

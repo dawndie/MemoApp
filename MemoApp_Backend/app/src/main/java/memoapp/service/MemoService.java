@@ -1,6 +1,7 @@
 package memoapp.service;
 
 import memoapp.dto.BulkPriorityUpdateRequest;
+import memoapp.dto.CreateMemoRequest;
 import memoapp.dto.PriorityStatistics;
 import memoapp.entity.Memo;
 import memoapp.entity.Priority;
@@ -46,14 +47,42 @@ public class MemoService {
     
     /**
      * Retrieves all memos from the system.
-     * 
+     *
      * This method follows the Single Responsibility Principle by having
      * a single, well-defined purpose: fetching all memos.
-     * 
+     *
      * @return List of all memos, never null (may be empty)
      */
     public List<Memo> getAllMemos() {
         return memoRepository.findAll();
+    }
+
+    /**
+     * Creates a new memo in the system.
+     *
+     * This method validates the input data and persists the memo to the database.
+     * It follows the fail-fast principle by validating all inputs before
+     * attempting to persist the data.
+     *
+     * The priority field is optional and defaults to NONE if not provided.
+     *
+     * @param request the memo creation request containing title, content, and priority
+     * @return the created memo with its generated ID and timestamps
+     * @throws MemoValidationException if the request data is invalid
+     */
+    @Transactional
+    public Memo createMemo(CreateMemoRequest request) {
+        // Validate the request
+        validateMemoForCreation(request);
+
+        // Create the memo entity from the request
+        Memo memo = new Memo();
+        memo.setTitle(request.getTitle().trim());
+        memo.setContent(request.getContent() != null ? request.getContent().trim() : null);
+        memo.setPriority(request.getPriority() != null ? request.getPriority() : Priority.NONE);
+
+        // Persist and return the memo
+        return memoRepository.save(memo);
     }
     
     /**
@@ -337,10 +366,10 @@ public class MemoService {
     
     /**
      * Validates memo content field.
-     * 
+     *
      * Focused validation method following Single Responsibility Principle.
      * Content can be null or empty, but if present, should not exceed reasonable limits.
-     * 
+     *
      * @param content the content to validate
      * @throws MemoValidationException if the content is invalid
      */
@@ -348,5 +377,24 @@ public class MemoService {
         if (content != null && content.length() > 10000) {
             throw new MemoValidationException("Memo content cannot exceed 10,000 characters", "content", content);
         }
+    }
+
+    /**
+     * Validates a CreateMemoRequest for memo creation.
+     *
+     * Performs comprehensive validation of the request object,
+     * ensuring all required fields are present and valid.
+     *
+     * @param request the memo creation request to validate
+     * @throws MemoValidationException if the request is invalid
+     */
+    private void validateMemoForCreation(CreateMemoRequest request) {
+        if (request == null) {
+            throw new MemoValidationException("Memo creation request cannot be null");
+        }
+
+        validateMemoTitle(request.getTitle());
+        validateMemoContent(request.getContent());
+        // Priority is optional and defaults to NONE, so no validation needed
     }
 }
