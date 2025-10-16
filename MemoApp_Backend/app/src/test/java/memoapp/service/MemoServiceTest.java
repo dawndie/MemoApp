@@ -1,6 +1,7 @@
 package memoapp.service;
 
 import memoapp.dto.BulkPriorityUpdateRequest;
+import memoapp.dto.CreateMemoRequest;
 import memoapp.dto.PriorityStatistics;
 import memoapp.entity.Memo;
 import memoapp.entity.Priority;
@@ -73,6 +74,157 @@ class MemoServiceTest {
 
         assertTrue(actualMemos.isEmpty());
         verify(memoRepository, times(1)).findAll();
+    }
+
+    // ===============================
+    // CreateMemo Tests
+    // ===============================
+
+    @Test
+    void createMemo_WithValidData_ShouldCreateAndReturnMemo() {
+        CreateMemoRequest request = new CreateMemoRequest("New Memo", "New content", Priority.HIGH);
+        Memo savedMemo = new Memo();
+        savedMemo.setId(1L);
+        savedMemo.setTitle("New Memo");
+        savedMemo.setContent("New content");
+        savedMemo.setPriority(Priority.HIGH);
+
+        when(memoRepository.save(any(Memo.class))).thenReturn(savedMemo);
+
+        Memo result = memoService.createMemo(request);
+
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+        assertEquals("New Memo", result.getTitle());
+        assertEquals("New content", result.getContent());
+        assertEquals(Priority.HIGH, result.getPriority());
+        verify(memoRepository, times(1)).save(any(Memo.class));
+    }
+
+    @Test
+    void createMemo_WithNullPriority_ShouldDefaultToNone() {
+        CreateMemoRequest request = new CreateMemoRequest("New Memo", "New content", null);
+        Memo savedMemo = new Memo();
+        savedMemo.setId(1L);
+        savedMemo.setTitle("New Memo");
+        savedMemo.setContent("New content");
+        savedMemo.setPriority(Priority.NONE);
+
+        when(memoRepository.save(any(Memo.class))).thenReturn(savedMemo);
+
+        Memo result = memoService.createMemo(request);
+
+        assertNotNull(result);
+        assertEquals(Priority.NONE, result.getPriority());
+        verify(memoRepository, times(1)).save(any(Memo.class));
+    }
+
+    @Test
+    void createMemo_WithNullContent_ShouldAcceptNullContent() {
+        CreateMemoRequest request = new CreateMemoRequest("New Memo", null, Priority.MEDIUM);
+        Memo savedMemo = new Memo();
+        savedMemo.setId(1L);
+        savedMemo.setTitle("New Memo");
+        savedMemo.setContent(null);
+        savedMemo.setPriority(Priority.MEDIUM);
+
+        when(memoRepository.save(any(Memo.class))).thenReturn(savedMemo);
+
+        Memo result = memoService.createMemo(request);
+
+        assertNotNull(result);
+        assertNull(result.getContent());
+        verify(memoRepository, times(1)).save(any(Memo.class));
+    }
+
+    @Test
+    void createMemo_WithWhitespaceInTitle_ShouldTrimTitle() {
+        CreateMemoRequest request = new CreateMemoRequest("  Trimmed Title  ", "Content", Priority.LOW);
+        Memo savedMemo = new Memo();
+        savedMemo.setId(1L);
+        savedMemo.setTitle("Trimmed Title");
+        savedMemo.setContent("Content");
+
+        when(memoRepository.save(any(Memo.class))).thenAnswer(invocation -> {
+            Memo memo = invocation.getArgument(0);
+            assertEquals("Trimmed Title", memo.getTitle());
+            return savedMemo;
+        });
+
+        Memo result = memoService.createMemo(request);
+
+        assertNotNull(result);
+        assertEquals("Trimmed Title", result.getTitle());
+        verify(memoRepository, times(1)).save(any(Memo.class));
+    }
+
+    @Test
+    void createMemo_WithNullRequest_ShouldThrowValidationException() {
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () ->
+                memoService.createMemo(null));
+
+        assertTrue(exception.getMessage().contains("cannot be null"));
+        verify(memoRepository, never()).save(any());
+    }
+
+    @Test
+    void createMemo_WithNullTitle_ShouldThrowValidationException() {
+        CreateMemoRequest request = new CreateMemoRequest(null, "Content", Priority.HIGH);
+
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () ->
+                memoService.createMemo(request));
+
+        assertTrue(exception.getMessage().contains("title"));
+        assertEquals("title", exception.getFieldName());
+        verify(memoRepository, never()).save(any());
+    }
+
+    @Test
+    void createMemo_WithEmptyTitle_ShouldThrowValidationException() {
+        CreateMemoRequest request = new CreateMemoRequest("", "Content", Priority.HIGH);
+
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () ->
+                memoService.createMemo(request));
+
+        assertTrue(exception.getMessage().contains("title"));
+        verify(memoRepository, never()).save(any());
+    }
+
+    @Test
+    void createMemo_WithBlankTitle_ShouldThrowValidationException() {
+        CreateMemoRequest request = new CreateMemoRequest("   ", "Content", Priority.HIGH);
+
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () ->
+                memoService.createMemo(request));
+
+        assertTrue(exception.getMessage().contains("title"));
+        verify(memoRepository, never()).save(any());
+    }
+
+    @Test
+    void createMemo_WithTooLongTitle_ShouldThrowValidationException() {
+        String longTitle = "a".repeat(256);
+        CreateMemoRequest request = new CreateMemoRequest(longTitle, "Content", Priority.HIGH);
+
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () ->
+                memoService.createMemo(request));
+
+        assertTrue(exception.getMessage().contains("255 characters"));
+        assertEquals("title", exception.getFieldName());
+        verify(memoRepository, never()).save(any());
+    }
+
+    @Test
+    void createMemo_WithTooLongContent_ShouldThrowValidationException() {
+        String longContent = "a".repeat(10001);
+        CreateMemoRequest request = new CreateMemoRequest("Valid Title", longContent, Priority.HIGH);
+
+        MemoValidationException exception = assertThrows(MemoValidationException.class, () ->
+                memoService.createMemo(request));
+
+        assertTrue(exception.getMessage().contains("10,000 characters"));
+        assertEquals("content", exception.getFieldName());
+        verify(memoRepository, never()).save(any());
     }
 
     @Test

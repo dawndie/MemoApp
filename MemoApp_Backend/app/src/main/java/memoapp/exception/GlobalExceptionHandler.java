@@ -2,11 +2,14 @@ package memoapp.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -52,7 +55,7 @@ public class GlobalExceptionHandler {
 
     /**
      * Handles MemoValidationException and returns HTTP 400 Bad Request.
-     * 
+     *
      * @param ex the exception that was thrown
      * @param request the web request during which the exception was thrown
      * @return ResponseEntity with error details and HTTP 400 status
@@ -60,14 +63,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MemoValidationException.class)
     public ResponseEntity<Map<String, Object>> handleMemoValidationException(
             MemoValidationException ex, WebRequest request) {
-        
+
         Map<String, Object> body = createErrorBody(
             HttpStatus.BAD_REQUEST.value(),
             "Validation Error",
             ex.getMessage(),
             request.getDescription(false)
         );
-        
+
         // Add validation-specific details if available
         if (ex.getFieldName() != null) {
             body.put("field", ex.getFieldName());
@@ -75,7 +78,43 @@ public class GlobalExceptionHandler {
         if (ex.getRejectedValue() != null) {
             body.put("rejectedValue", ex.getRejectedValue());
         }
-        
+
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handles MethodArgumentNotValidException thrown by Spring's @Valid annotation.
+     *
+     * This exception is thrown when request body validation fails due to
+     * constraint violations in DTO objects (e.g., @NotBlank, @Size).
+     *
+     * @param ex the validation exception containing all field errors
+     * @param request the web request during which the exception was thrown
+     * @return ResponseEntity with detailed validation errors and HTTP 400 status
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException ex, WebRequest request) {
+
+        Map<String, String> fieldErrors = new HashMap<>();
+
+        // Extract all field validation errors
+        ex.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            fieldErrors.put(fieldName, errorMessage);
+        });
+
+        Map<String, Object> body = createErrorBody(
+            HttpStatus.BAD_REQUEST.value(),
+            "Validation Error",
+            "Invalid request body. Please check the field errors.",
+            request.getDescription(false)
+        );
+
+        // Add detailed field errors
+        body.put("fieldErrors", fieldErrors);
+
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
